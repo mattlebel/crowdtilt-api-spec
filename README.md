@@ -368,7 +368,7 @@ will be set to 1 to reflect this change.
     POST /users/:id/verification
 
     $ curl -X POST -H Content-Type:application/json -u key:secret \
-    https://api-sandbox.crowdtilt.com/v1/users/USREC5 \
+    https://api-sandbox.crowdtilt.com/v1/users/USREC5/verification \
     -d'
     {
        "verification" : {
