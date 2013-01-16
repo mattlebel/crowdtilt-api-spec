@@ -49,6 +49,7 @@ What we think is cool about the Crowdtilt API:
 * [Examples](#examples)
 * [Resource Definitions](#resource-definitions)
     * [User Definition](#user-definition)
+    * [Bank Definition](#bank-definition)
     * [Campaign Definition](#campaign-definition)
     * [Payment Definition](#payment-definition)
     * [Settlement Definition](#settlement-definition)
@@ -863,7 +864,8 @@ request.  Other fields submitted will be ignored.
         "bank": {
             "account_number_last_four" : "1234",
             "metadata" : {},
-            "id" : "BAP688E65FA0C6D11E28914FE5E5CD73F12",
+            "id" : "BAP688",
+            "default" : 0,
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
             "bank_code_last_four" : "1234",
@@ -886,7 +888,8 @@ request.  Other fields submitted will be ignored.
         "bank" : {
             "account_number_last_four" : "1234",
             "metadata" : {},
-            "id" : "BAP688E65FA0C6D11E28914FE5E5CD73F12",
+            "id" : "BAP688",
+            "default" : 0,
             "name" : "John Doe",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
             "bank_code_last_four" : "1234",
@@ -898,6 +901,61 @@ request.  Other fields submitted will be ignored.
 
     200 => OK
 
+### Make User Bank Default
+
+Before a bank account will be sent money, it must be marked as the default
+bank account for that user.  To make a bank account the default, make the
+following request:
+
+    POST /users/:id/banks/default
+
+    {
+        "bank": { "id" : "BAP688" }
+    }
+
+#### Response Body
+
+    {
+        "bank": {
+            "account_number_last_four" : "1234",
+            "metadata" : {},
+            "default" : 1,
+            "id" : "BAP688",
+            "name" : "Bank Name",
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "bank_code_last_four" : "1234",
+            "uri" : "/v1/users/USR54B/banks/BAP688"
+        }
+    }
+
+#### Response Codes
+
+    200 => OK
+
+### Get User's Default Bank
+
+To get the current default bank for a user, you can simply request:
+
+    GET /users/:id/banks/default
+
+#### Response Body
+
+    {
+        "bank": {
+            "account_number_last_four" : "1234",
+            "metadata" : {},
+            "default" : 1,
+            "id" : "BAP688",
+            "name" : "Bank Name",
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "bank_code_last_four" : "1234",
+            "uri" : "/v1/users/USR54B/banks/BAP688"
+        }
+    }
+
+#### Response Codes
+
+    200 => OK
 
 ### List User Banks
 
@@ -918,7 +976,8 @@ This resource lists the bank accounts associated with this user.
             {
                 "account_number_last_four" : "1234",
                 "metadata" : {},
-                "id" : "BAP688E65FA0C6D11E28914FE5E5CD73F12",
+                "id" : "BAP688",
+                "default" : 0,
                 "name" : "John Doe",
                 "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
                 "bank_code_last_four" : "1234",
@@ -958,7 +1017,8 @@ request.  Other fields submitted will be ignored.
             "metadata" : {
                 "key1" : "value1"
             },
-            "id" : "BAP688E65FA0C6D11E28914FE5E5CD73F12",
+            "id" : "BAP688",
+            "default" : 0,
             "name" : "John Doe",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
             "bank_code_last_four" : "1234",
@@ -2137,6 +2197,82 @@ This section outlines the full definition of our resources.
             <td>string</td>
             <td>Auto generated and read-only</td>
             <td>The uri for the user's payments</td>
+        </tr>
+    </tbody>
+</table>
+
+
+## Bank Definition
+
+<table>
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Type</th>
+            <th>Required</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>String</td>
+            <td>Auto generated and read-only</td>
+            <td>A unique identifier for the bank</td>
+        </tr>
+        <tr>
+            <td>default</td>
+            <td>Integer (1 or 0)</td>
+            <td>Read-only</td>
+            <td> Tells you if this bank is currently the default for the user </td>
+        </tr>
+        <tr>
+            <td>account_number</td>
+            <td>string</td>
+            <td>Yes, not returned</td>
+            <td> Bank Account Number </td>
+        </tr>
+        <tr>
+            <td>account_number_last_four</td>
+            <td>string</td>
+            <td>Read-Only</td>
+            <td>Last four digits of account nummber</td>
+        </tr>
+        <tr>
+            <td>bank_code</td>
+            <td>string</td>
+            <td>Yes, not returned</td>
+            <td> Bank Routing Code </td>
+        </tr>
+        <tr>
+            <td>bank_code_last_four</td>
+            <td>string</td>
+            <td>Read-Only</td>
+            <td>Last four digits of bank routing nummber</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>String</td>
+            <td>No</td>
+            <td> The name of this bank account </td>
+        </tr>
+        <tr>
+            <td>user</td>
+            <td>JSON object</td>
+            <td>Read-Only</td>
+            <td> The user object that owns this bank</td>
+        </tr>
+        <tr>
+            <td>metadata</td>
+            <td>JSON object</td>
+            <td>No</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store.</td>
+        </tr>
+        <tr>
+            <td>uri</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>The uri for this user resource</td>
         </tr>
     </tbody>
 </table>
