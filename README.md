@@ -2220,7 +2220,7 @@ Creating bank accounts is just like creating credit cards. First gather up the b
 `crowdtilt.bank.create` along with a `user id` and a response handler...but keep in mind one **important** extra step: 
 When you go to save the tokenized bank account to your server (most likely through a request made in your callback function), 
 you need to make an additional API call to set this new bank account as the 'default' bank account. See 
-[setting the default bank account](#set-default-bank-account) for more information.
+[setting the default bank account](#make-user-bank-default) for more information.
 
 Example:
 
