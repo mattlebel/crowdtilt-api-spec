@@ -3,6 +3,7 @@
 # Crowdtilt API Specs (BETA)
 
 The Crowdtilt API opens up the opportunity for developers to:
+
 * Offer a group payments option in their applications.
 * Offer a pre-sales commerce option in their applications.
 * Develop a crowdfunding application (i.e., single project model like Lockitron
@@ -11,22 +12,25 @@ The Crowdtilt API opens up the opportunity for developers to:
 * Enable the collaboration around these styles of commerce.
 
 What we think is cool about the Crowdtilt API:
+
 * Developers can use the Crowdtilt API with their own payment processor
     as it works with [Stripe](https://stripe.com/),
     [Balanced](https://www.balancedpayments.com/),
     [BrainTree](https://www.braintreepayments.com).
 * Though we have the above preferred partners for the Crowdtilt API already
-  built out and ready to use, our API is actually built around our universal
-  payments interface, which allows developers to integrate any payment
-  processor from around the world right into our system.  For more information
-  about how to get access to this interface to build support for your favorite
-  processor, drop us a note at [devs@crowdtilt.com](mailto:devs@crowdtilt.com).
+    built out and ready to use, our API is actually built around our universal
+    payments interface, which allows developers to integrate any payment
+    processor from around the world right into our system.  For more information
+    about how to get access to this interface to build support for your favorite
+    processor, drop us a note at [devs@crowdtilt.com](mailto:devs@crowdtilt.com).
 * The API also works with credit cards and ACH debit payments or a combination
     of these.
 * The API provides collaboration tools such as commenting/updates, nested
     comments, messaging, notifications, and tracking of those that have paid and
     those that haven't.
 * The API supports both multiple currencies and international languages.
+* We also provide a tool to tokenize the sensitive information you collect (credit card 
+  and bank account numbers), so you don't have to worry about PCI compliance
 
 # Menu
 * [Introduction](#introduction)
@@ -45,11 +49,11 @@ What we think is cool about the Crowdtilt API:
     * [Rejected Payments](#rejected-payments)
     * [Refunds](#refunds)
     * [Campaign Settlements](#campaign-settlements)
-    * [Campaign Comments](#campaign-comments)
-* [Examples](#examples)
+    * [Campaign Comments](#campaign-comments)   
+* [API Examples](#api-examples)
+* [Tokenizing Sensitive User Information](#tokenizing-sensitive-user-information)
 * [Resource Definitions](#resource-definitions)
     * [User Definition](#user-definition)
-    * [Bank Definition](#bank-definition)
     * [Campaign Definition](#campaign-definition)
     * [Payment Definition](#payment-definition)
     * [Settlement Definition](#settlement-definition)
@@ -96,10 +100,12 @@ team. Crowdtilt forces HTTPS for all services, including our public website. All
 data is stored in a Payment Industry Data Security Standard (PCI DSS)
 Compliant environment.
 
-Implementors of the beta API, for now, must be PCI compliant as well. However,
-we will be able to offer javascript tokenization for non-PCI compliant consumers
-soon as well as our group-payments javascript button for the lightest
-integration possible for both PCI and non-PCI compliant consumers alike.
+Crowdtilt provides a PCI-compliant javascript library, `crowdtilt.js`,
+which is easy to implement on your website. Sensitive payment information can
+then be securely collected without ever touching your servers, keeping you
+completely outside of PCI and regulatory scope. See 
+[Tokenizing Sensitive User Information](#tokenizing-sensitive-user-information) 
+for more information.
 
 We investigate all reported security issues with extreme immediacy. If you
 believe you've found any security issues, please email us at
@@ -845,6 +851,7 @@ request.  Other fields submitted will be ignored.
 
 
 ## User Banks
+Note that the `bank_code` field is also referred to as a "routing number" in the USA.
 
 ### Create User Bank
 
@@ -854,7 +861,7 @@ request.  Other fields submitted will be ignored.
         "bank": {
             "account_number" : "1234567890",
             "name" : "Bank Name",
-            "bank_code" : "123451234",
+            "bank_code" : "321174851",
         }
     }
 
@@ -862,13 +869,13 @@ request.  Other fields submitted will be ignored.
 
     {
         "bank": {
-            "account_number_last_four" : "1234",
+            "account_number_last_four" : "7890",
             "metadata" : {},
             "id" : "BAP688",
             "default" : 0,
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "1234",
+            "bank_code_last_four" : "4851",
             "uri" : "/v1/users/USR54B/banks/BAP688"
         }
     }
@@ -886,13 +893,13 @@ request.  Other fields submitted will be ignored.
 
     {
         "bank" : {
-            "account_number_last_four" : "1234",
+            "account_number_last_four" : "7890",
             "metadata" : {},
             "id" : "BAP688",
             "default" : 0,
             "name" : "John Doe",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "1234",
+            "bank_code_last_four" : "4851",
             "uri" : "/v1/users/USR54B/banks/BAP688"
         }
     }
@@ -917,13 +924,13 @@ following request:
 
     {
         "bank": {
-            "account_number_last_four" : "1234",
+            "account_number_last_four" : "7890",
             "metadata" : {},
             "default" : 1,
             "id" : "BAP688",
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "1234",
+            "bank_code_last_four" : "4851",
             "uri" : "/v1/users/USR54B/banks/BAP688"
         }
     }
@@ -942,13 +949,13 @@ To get the current default bank for a user, you can simply request:
 
     {
         "bank": {
-            "account_number_last_four" : "1234",
+            "account_number_last_four" : "7890",
             "metadata" : {},
             "default" : 1,
             "id" : "BAP688",
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "1234",
+            "bank_code_last_four" : "4851",
             "uri" : "/v1/users/USR54B/banks/BAP688"
         }
     }
@@ -974,13 +981,13 @@ This resource lists the bank accounts associated with this user.
         },
         "banks": [
             {
-                "account_number_last_four" : "1234",
+                "account_number_last_four" : "7890",
                 "metadata" : {},
                 "id" : "BAP688",
                 "default" : 0,
                 "name" : "John Doe",
                 "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-                "bank_code_last_four" : "1234",
+                "bank_code_last_four" : "4851",
                 "uri" : "/v1/users/USR54B/banks/BAP688"
             }
         ]
@@ -1013,7 +1020,7 @@ request.  Other fields submitted will be ignored.
 
     {
         "bank" : {
-            "account_number_last_four" : "1234",
+            "account_number_last_four" : "7890",
             "metadata" : {
                 "key1" : "value1"
             },
@@ -1021,7 +1028,7 @@ request.  Other fields submitted will be ignored.
             "default" : 0,
             "name" : "John Doe",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "1234",
+            "bank_code_last_four" : "4851",
             "uri" : "/v1/users/USR54B/banks/BAP688"
         }
     }
@@ -1821,7 +1828,7 @@ Currently you can only alter the score and the metadata of a comment.
 
     200 => OK
 
-## Examples
+## API Examples
 
 ### Create a User
 
@@ -2099,6 +2106,354 @@ minus the `$2.00` set in the `admin_fee_amount` field).
 
 Now you have created 2 users, a campaign under one user, and a payment to the
 campaign by another user!
+
+## Tokenizing Sensitive User Information
+
+If you want to store sensitive financial information from your users (like
+credit card and bank account numbers), you are required to be compliant
+with the <a href="https://www.pcisecuritystandards.org/" target="_blank">Payment 
+Card Industry Data Security Standard (PCI DSS)</a>.
+Crowdtilt handles this for you by providing a PCI-compliant javascript library, `crowdtilt.js`,
+which is easy to implement on your website. Sensitive payment information can
+then be securely collected without ever touching your servers, keeping you
+completely outside of PCI and regulatory scope.
+
+To implement `crowdtilt.js`, follow the steps below. You can also check out this 
+[example implementation](#tokenization-examples).
+
+### Include the Library
+To use `crowdtilt.js`, simply include the following script tag on any page
+where you will be collecting credit card or bank account information:
+
+    <script type="text/javascript" src="https://api.crowdtilt.com/v1/js/crowdtilt.js"></script>
+
+### Initialize the crowdtilt object
+In a separate script tag, initialize the crowdtilt object:
+
+    <script type="text/javascript">
+        crowdtilt.init();
+    </script>
+
+### Make sure to create users first
+Credit cards and bank accounts must be associated with existing `user` objects created through
+our API. This means that you need to collect user account information in a step *before* collecting credit 
+card or bank account information. See [creating users](#create-user) for more information. You'll need the 
+resulting `user id` to create credit cards and bank accounts for that user.
+
+### Create a Credit Card    
+Once you have a `user`, the next step is to collect her credit card information and pass it to the
+`crowdtilt.card.create` function along with her `user id`, as well as a function to handle the response
+(more on that in a second).
+
+Example:
+
+    "cardData": {
+        "number":"4111111111111111",
+        "expiration_month":"03",
+        "expiration_year":2023,
+        "security_code":123 
+    }
+    
+    crowdtilt.card.create(user_id, cardData, responseHandler);   
+
+The `user id` should be the hash returned by the user creation API call, e.g. "USR1E0A9BCE5F6111E28F485D097AC0CAB6"
+
+The required credit card data fields are:
+
+* `number`: card number, as a string, without any separators, should be 16 digits in length, e.g. "4111111111111111"
+* `expiration_month`: two digit number, as a string, representing the card's expiration month, e.g. "03"
+* `expiration_year`: four digit number, as a string, representing the card's expiration year, e.g. "2013"
+* `security_code`: three or four digit number, as a string, e.g. "123"
+
+If successful, the response object passed to the responseHandler function takes the form:
+
+    {
+        "card": {
+            "last_four":"1111",
+            "expiration_year":2013,
+            "expiration_month":"03",
+            "uri":"/v1/users/USR1E0A9BCE5F6111E28F485D097AC0CAB6/cards/CCP59BCB06C601F11E28057FB337AC0CAB6",
+            "card_type":"VISA card",
+            "creation_date":"2013-01-16T20:57:34Z",
+            "metadata":{},
+            "id":"CCP59BCB06C601F11E28057FB337AC0CAB6"
+        },
+        "request_id":"REQ5735A0D8601F11E2998D00347AC0CAB6",
+        "status":201
+    }
+
+If not successful, the response object passed to the responseHandler function takes the form:
+
+    {
+        "error": ... // A string or an object describing the error(s)
+        "request_id": ... //May or may not be present depending on whether the error was found before or after submitting to the API
+        "status": ... // HTTP status code
+    }
+
+### Handling the Response
+When creating a card or a bank account, you must pass in your own callback function to handle the response
+from our API.  The `status` property included with the response provides a handy hook to help you decide
+what to do.
+
+Here is a basic outline of what your response handler could look like:
+
+    function responseHandler(response) {
+        switch (response.status) {
+           case 201:
+               // The card or bank was created successfully!
+               // Submit the data contained in response.card or response.bank to your server for saving
+               // For bank accounts, remember to set the new account as the default in addition to saving it to your database
+               break;
+           case 400:
+               // missing field - check response.error for details
+               break;
+           case 404:
+               // your user_id is incorrect (no user was found)
+               break;
+           default:
+               // Some other error ocurred, check response.error for details
+       }
+    }
+
+### Create a Bank Account
+Creating bank accounts is just like creating credit cards. First gather up the bank account information, then pass it to
+`crowdtilt.bank.create` along with a `user id` and a response handler...but keep in mind one **important** extra step: 
+When you go to save the tokenized bank account to your server (most likely through a request made in your callback function), 
+you need to make an additional API call to set this new bank account as the 'default' bank account. See 
+[setting the default bank account](#set-default-bank-account) for more information.
+
+Example:
+
+    "bankData": {
+        "name" : "Bank Name",
+        "account_number" : "1234567890",
+        "bank_code" : "321174851"
+    }
+    
+    crowdtilt.bank.create(user_id, bankData, responseHandler);
+
+The `user id` should be the hash returned by the user creation API call, e.g. "USR1E0A9BCE5F6111E28F485D097AC0CAB6"
+
+The required credit card data fields are:
+
+* `name`: card number, as a string, without any separators, should be 16 digits in length, e.g. "4111111111111111"
+* `account_number`: arbitrary length number
+* `bank_code`: nine digit number, as a string, representing the bank code (also known as routing number), e.g. "321174851"
+
+If successful, the response object passed to the responseHandler function takes the form:
+
+    {
+        "bank": {
+            "account_number_last_four":"0000",
+            "metadata":{},"id":"BAP5973D36A601F11E29CF3FB337AC0CAB6",
+            "is_valid":1,
+            "name":"Wells Fargo",
+            "user_uri":"/v1/users/USR1E0A9BCE5F6111E28F485D097AC0CAB6",
+            "bank_code_last_four":"4851",
+            "uri":"/v1/users/USR1E0A9BCE5F6111E28F485D097AC0CAB6/banks/BAP5973D36A601F11E29CF3FB337AC0CAB6"
+        },
+        "request_id":"REQ5743854A601F11E2B79201347AC0CAB6",
+        "status":201
+    }
+
+If not successful, the response object passed to the responseHandler function takes the form:
+
+    {
+        "error": ... // A string or an object describing the error(s)
+        "request_id": ... //May or may not be present depending on whether the error was found before or after submitting to the API
+        "status": ... // HTTP status code
+    }
+
+### Client-side Validation Helpers
+These handy functions let you validate user input on the client side, leading to a better overall experience.
+
+**Validating Card Number**
+
+Checks that the number is formatted correctly and passes the <a href="http://en.wikipedia.org/wiki/Luhn_algorithm" target="_blank">Luhn check</a>. Note that spaces and other punctuation are ignored.
+
+    crowdtilt.isCardNumberValid('4111111111111111');      // true
+    crowdtilt.isCardNumberValid('4111-1111-1111-1111');   // true
+    crowdtilt.isCardNumberValid('4111 1111 1111 1111');   // true
+    crowdtilt.isCardNumberValid('123456');                // false, too short
+    crowdtilt.isCardNumberValid('4242-1111-1111-1111');   // false, doesn't pass Luhn check
+
+**Determining Card Brand**
+
+Returns the card brand based on the card number
+
+    crowdtilt.card.cardType('5105105105105100');   // Mastercard
+    crowdtilt.card.cardType('4111111111111111');   // VISA
+    crowdtilt.card.cardType('341111111111111');    // American Express
+    crowdtilt.card.cardType(0)                     // null
+
+**Validating Security Code (CSC)**
+
+Checks that the security code (also known as CSC or CVC)is properly formatted based on card brand
+
+    crowdtilt.card.isSecurityCodeValid('4111111111111111', 999)   // true, VISA has a 3 digit security code
+    crowdtilt.card.isSecurityCodeValid('4111111111111111', 9999)  // false
+    crowdtilt.card.isSecurityCodeValid('341111111111111', 999)    // false, American Express has a 4 digist security code
+
+**Validating Card Expiration**
+
+Checks if the expiration date is properly formatted and in the future
+
+    crowdtilt.card.isExpirationValid('01', '2020');    // true
+    crowdtilt.card.isExpirationValid(1, 2010);         // false
+
+**General Card Validation**
+
+Runs the full set of validation functions, returns an error object that can contain multiple errors
+
+    crowdtilt.card.validate({
+        card_number:'4111111111111112',
+        expiration_month: '01',
+        expiration_year: '2010',
+        security_code: '123'
+    });
+
+Returns:
+
+    {
+        card_number:'"4111111111111112" is not a valid credit card number',
+        expiration:'"01-2010" is not a valid credit card expiration date'
+    }
+    
+**Validating a USA Bank Code (Routing Number)**
+
+Use ONLY for USA-based bank accounts. Checks against the <a href="http://en.wikipedia.org/wiki/Routing_transit_number#MICR_Routing_number_format" target="_blank">MICR Routing Number Format</a>
+
+    crowdtilt.bankAccount.validateUSARoutingNumber('321174851') // passes
+    crowdtilt.bankAccount.validateUSARoutingNumber('021000021') // passes
+    crowdtilt.bankAccount.validateUSARoutingNumber('123457890') // fails
+
+
+### Tokenization Examples
+Here we include two sample forms, one to collect credit card information and one to collect bank account information.
+
+Included also is sample javascript to handle the data captured in the forms using `crowdtilt.js`. We use <a href="http://jquery.com/">jQuery</a> for convenience, but keep in mind that jQuery is not required when using `crowdtilt.js`.
+
+**Sample Credit Card Form**
+        
+    <form action="#" method="POST" "id="cardForm">
+        <input type="hidden" name="user_id">           
+        <fieldset>
+            <label>Card Number</label>
+            <input type="text" name="card_number" autocomplete="off">
+        </fieldset>
+        <fieldset>
+            <label>Expiration</label>             
+            <select name="expiration_month" style="width:50px">
+                <option value="01" selected>01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                </select>
+                / 
+            <select name="expiration_year" style="width:75px">
+                <option value="2013" selected>2013</option>
+                <option value="2014">2014</option>
+                <option value="2015">2015</option>
+                <option value="2016">2016</option>
+                <option value="2017">2017</option>
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <label>Security Code</label>
+            <input type="text" name="security_code" autocomplete="off">
+        </fieldset>
+        <button type="submit">submit</button>
+    </form>
+
+**Sample Bank Account Form**
+
+    <form action="#" method="POST" id="bankForm">
+        <input type="hidden" name="user_id">      
+        <fieldset>
+            <label>Bank Name</label>
+            <input type="text" name="name">
+        </fieldset>
+        <fieldset>
+            <label>Account Number</label>
+            <input type="text" name="account_number" autocomplete="off">
+        </fieldset>
+        <fieldset>
+            <label>Bank Code (Routing Number in USA)</label>
+            <input type="text" name="bank_code">
+        </fieldset>
+        
+        <button type="submit">submit</button>
+    </form>
+
+**Sample Javascript**
+
+    <script type="text/javascript">
+        (function() {    
+            
+            //Initialize the crowdtilt object
+            crowdtilt.init();
+         
+            var responseHandler = function(response) {
+                switch (response.status) {
+                   case 201:
+                       // The card or bank was created successfully!
+                       // Submit the data contained in response.card or repsonse.bank to your server for saving
+                       // For bank accounts, remember to set the new account as the default in addition to saving it to your database
+                       break;
+                   case 400:
+                       // missing field - check response.error for details
+                       break;
+                   case 404:
+                       // your user_id is incorrect (no user was found)
+                       break;
+                   default:
+                       // Some other error ocurred, check response.error for details
+                }
+            }
+        
+            var tokenizeCard = function(e) {
+                e.preventDefault();
+         
+                var $form = $('form#cardForm');
+                var cardData = {
+                    number: $form.find('[name="card_number"]').val(),
+                    expiration_month: $form.find('[name="expiration_month"]').val(),
+                    expiration_year: $form.find('[name="expiration_year"]').val(),
+                    security_code: $form.find('[name="security_code"]').val()
+                };
+                var user_id = $form.find('[name="user_id"]').val();
+                
+                crowdtilt.card.create(user_id, cardData, callback);
+            };
+            $('#cardForm').submit(tokenizeCard);        
+         
+            var tokenizeBankAccount = function(e) {
+                e.preventDefault();
+        
+                var $form = $('form#bankForm');
+                var bankAccountData = {
+                    name: $form.find('[name="name"]').val(),
+                    account_number: $form.find('[name="account_number"]').val(),
+                    bank_code: $form.find('[name="bank_code"]').val()
+                };
+                var user_id = $form.find('[name="user_id"]').val();
+                
+                crowdtilt.bank.create(user_id, bankAccountData, callback);
+            };
+            $('#bankForm').submit(tokenizeBankAccount);
+        })();
+    </script>
 
 ## Resource Definitions
 
