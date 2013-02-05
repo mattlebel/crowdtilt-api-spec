@@ -872,7 +872,7 @@ Note that the `bank_code` field is also referred to as a "routing number" in the
             "account_number_last_four" : "7890",
             "metadata" : {},
             "id" : "BAP688",
-            "default" : 0,
+            "is_default" : 0,
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
             "bank_code_last_four" : "4851",
@@ -896,7 +896,7 @@ Note that the `bank_code` field is also referred to as a "routing number" in the
             "account_number_last_four" : "7890",
             "metadata" : {},
             "id" : "BAP688",
-            "default" : 0,
+            "is_default" : 0,
             "name" : "John Doe",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
             "bank_code_last_four" : "4851",
@@ -926,7 +926,7 @@ following request:
         "bank": {
             "account_number_last_four" : "7890",
             "metadata" : {},
-            "default" : 1,
+            "is_default" : 1,
             "id" : "BAP688",
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
@@ -951,7 +951,7 @@ To get the current default bank for a user, you can simply request:
         "bank": {
             "account_number_last_four" : "7890",
             "metadata" : {},
-            "default" : 1,
+            "is_default" : 1,
             "id" : "BAP688",
             "name" : "Bank Name",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
@@ -984,7 +984,7 @@ This resource lists the bank accounts associated with this user.
                 "account_number_last_four" : "7890",
                 "metadata" : {},
                 "id" : "BAP688",
-                "default" : 0,
+                "is_default" : 0,
                 "name" : "John Doe",
                 "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
                 "bank_code_last_four" : "4851",
@@ -1025,7 +1025,7 @@ request.  Other fields submitted will be ignored.
                 "key1" : "value1"
             },
             "id" : "BAP688",
-            "default" : 0,
+            "is_default" : 0,
             "name" : "John Doe",
             "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
             "bank_code_last_four" : "4851",
@@ -2576,7 +2576,7 @@ This section outlines the full definition of our resources.
             <td>A unique identifier for the bank</td>
         </tr>
         <tr>
-            <td>default</td>
+            <td>is_default</td>
             <td>Integer (1 or 0)</td>
             <td>Read-only</td>
             <td> Tells you if this bank is currently the default for the user </td>
