@@ -2133,6 +2133,12 @@ In a separate script tag, initialize the crowdtilt object:
     <script type="text/javascript">
         crowdtilt.init();
     </script>
+    
+IMPORTANT NOTE: If you are working in the sandbox, pass 'sandbox' in as a parameter:
+
+    <script type="text/javascript">
+        crowdtilt.init('sandbox');
+    </script>
 
 ### Make sure to create users first
 Credit cards and bank accounts must be associated with existing `user` objects created through
