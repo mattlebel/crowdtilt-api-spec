@@ -2128,16 +2128,17 @@ where you will be collecting credit card or bank account information:
     <script type="text/javascript" src="https://api.crowdtilt.com/v1/js/crowdtilt.js"></script>
 
 ### Initialize the crowdtilt object
-In a separate script tag, initialize the crowdtilt object:
+In a separate script tag, initialize the crowdtilt object. NOTE: this defaults to using the sandbox api when 
+no parameter is passed to the init method:
 
     <script type="text/javascript">
         crowdtilt.init();
     </script>
     
-IMPORTANT NOTE: If you are working in the sandbox, pass 'sandbox' in as a parameter:
+Once you are ready to go to production, pass 'production' as a parameter:
 
     <script type="text/javascript">
-        crowdtilt.init('sandbox');
+        crowdtilt.init('production');
     </script>
 
 ### Make sure to create users first
