@@ -22,7 +22,7 @@ What we think is cool about the Crowdtilt API:
     payments interface, which allows developers to integrate any payment
     processor from around the world right into our system.  For more information
     about how to get access to this interface to build support for your favorite
-    processor, drop us a note at [devs@crowdtilt.com](mailto:devs@crowdtilt.com).
+    processor, drop us a note at [support.api@crowdtilt.com](mailto:support.api@crowdtilt.com).
 * The API also works with credit cards and ACH debit payments or a combination
     of these.
 * The API provides collaboration tools such as commenting/updates, nested
@@ -54,6 +54,8 @@ What we think is cool about the Crowdtilt API:
 * [Tokenizing Sensitive User Information](#tokenizing-sensitive-user-information)
 * [Resource Definitions](#resource-definitions)
     * [User Definition](#user-definition)
+    * [Card Definition](#card-definition)
+    * [Bank Definition](#bank-definition)
     * [Campaign Definition](#campaign-definition)
     * [Payment Definition](#payment-definition)
     * [Settlement Definition](#settlement-definition)
@@ -63,7 +65,7 @@ What we think is cool about the Crowdtilt API:
 ## Introduction
 
 It is important to understand that the Crowdtilt API is a layer of abstraction
-on top payment processors. Currently, we support Balanced, which is recommended
+on top of payment processors. Currently, we support Balanced, which is recommended
 for multi-project services such as Kickstarter. We also support Stripe, which is
 suitable for single-project services such as Lockitron. Finally, we support
 Braintree, which is highly suitable for international projects.
@@ -178,7 +180,7 @@ Unfortunately, we don't have client libraries, yet. If you write one, let us
 know and we'll link to it.
 
 
-### Hackers Support
+### Hacker Support
 
 We like hanging out on IRC, a lot. Feel free to come hang out with us #crowdtilt
 at freenode. You can also send an email to
@@ -201,6 +203,20 @@ branch, which means that the <a href="https://www.crowdtilt.com"
 target="_blank">Crowdtilt</a> team will start working on it. Once it is fully
 implemented and ready to go to production, it'll get merged to the `master`
 branch.
+
+### Using Metadata
+
+All resources contain a metadata field for storing key-value pairs of extra data. Store
+as many of these key-value pairs as you wish.
+
+Some common uses of this field include storing extra user data, such as address fields or 
+profile image urls, or storing extra campaign data, such as a campaign description field
+or campaign image url.
+
+**Important Note:** 
+Updating the metadata field completely overwrites its contents. Be sure to include
+the entirety of the data you wish to store when making an update, including key-value
+pairs that did not change.
 
 
 ## User Resources
@@ -311,16 +327,24 @@ branch.
 
 ### Create User
 
+The minimum amount of information needed to create a user is a valid email address.
+
+Keep in mind that the metadata field is a great place to store references to other user assets, such as
+a profile image.
+
     POST /users
 
-    $ curl -X POST -H Content-Type:application/json \
-    -u key:secret https://api-sandbox.crowdtilt.com/v1/users \
+#### Example Request
+
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users \
     -d'
     {
        "user" : {
           "firstname" : "foo",
           "lastname" : "bar",
           "email" : "user@example.com"
+          "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
        }
     }'
 
@@ -333,14 +357,13 @@ branch.
             "firstname": "Foo",
             "lastname": "Bar",
             "is_verified": 0,
-            "img": "https://example.com/profile.png",
             "creation_date": "2011-07-02T14:20:48Z",
             "last_login_date": "2012-09-22T01:55:49Z",
             "uri": "/v1/users/USREC5",
             "campaigns_uri": "/v1/users/USREC5/campaigns",
             "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
             "payments_uri": "/v1/users/USREC5/payments",
-            "metadata": {}
+            "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
         }
     }
 
@@ -374,6 +397,8 @@ will be set to 1 to reflect this change.
 
     POST /users/:id/verification
 
+#### Example Request
+
     $ curl -X POST -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5/verification \
     -d'
@@ -405,6 +430,11 @@ password, as query parameters.
 
     GET /users/authentication?email=user@example.com&password=mypassword
 
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/users/authentication?email=user@example.com&password=mypassword
+
 #### Response Body
 
     {
@@ -412,7 +442,6 @@ password, as query parameters.
           "id" : "USRB07",
           "firstname" : "foo",
           "lastname" : "bar",
-          "img" : null,
           "email" : "user@example.com",
           "is_verified" : 0,
           "creation_date" : "2012-09-26T10:22:03.900529000Z",
@@ -430,7 +459,9 @@ password, as query parameters.
 
     GET  /users/:id
 
-    $ curl -u key:secret \
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5
 
 #### Response Body
@@ -442,14 +473,13 @@ password, as query parameters.
             "firstname": "Foo",
             "lastname": "Bar",
             "is_verified": 1,
-            "img": "https://example.com/profile.png",
             "creation_date": "2011-07-02T14:20:48Z",
             "last_login_date": "2012-09-22T01:55:49Z",
             "uri": "/v1/users/USREC5",
             "campaigns_uri": "/v1/users/USREC5/campaigns",
             "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
             "payments_uri": "/v1/users/USREC5/payments",
-            "metadata": {}
+            "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
         }
     }
 
@@ -462,7 +492,10 @@ password, as query parameters.
 
     GET /users
 
-    $ curl -u key:secret https://api-sandbox.crowdtilt.com/v1/users
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \ 
+    https://api-sandbox.crowdtilt.com/v1/users
 
 #### Response Body
 
@@ -480,14 +513,13 @@ password, as query parameters.
                 "firstname": "Foo",
                 "lastname": "Bar",
                 "is_verified": 0,
-                "img": "https://example.com/profile.png",
                 "creation_date": "2011-07-02T14:20:48Z",
                 "last_login_date": "2012-09-22T01:55:49Z",
                 "uri": "/v1/users/USREC5",
                 "campaigns_uri": "/v1/users/USREC5/campaigns",
                 "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
                 "payments_uri": "/v1/users/USREC5/payments",
-                "metadata": {}
+                "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
             },
             .
             .
@@ -508,7 +540,9 @@ to update a single attribute without having to send the full
 
     PUT /users/:id
 
-    $ curl -X PUT -HContent-Type:application/json -u key:secret \
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5 \
     -d'
     {
@@ -526,14 +560,13 @@ to update a single attribute without having to send the full
             "firstname": "Foo",
             "lastname": "new last name",
             "is_verified": 0,
-            "img": "https://example.com/profile.png",
             "creation_date": "2011-07-02T14:20:48Z",
             "last_login_date": "2012-09-22T01:55:49Z",
             "uri": "/v1/users/USREC5",
             "campaigns_uri": "/v1/users/USREC5/campaigns",
             "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
             "payments_uri": "/v1/users/USREC5/payments",
-            "metadata": {}
+            "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
         }
     }
 
@@ -551,7 +584,9 @@ campaigns that he paid for.
 
     GET /users/:id/campaigns
 
-    $ curl -u key:secret \
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5/campaigns
 
 #### Response Body
@@ -607,14 +642,15 @@ This resource returns a specific campaign created by this user.
 
     GET /users/:id/campaigns/:id
 
-    $ curl -u key:secret \
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5/campaigns/CMP96B
 
 #### Response Body
 
     {
        "campaign" : {
-          "img" : null,
           "metadata" : { },
           "id" : "CMP96B",
           "is_paid" : 0,
@@ -651,13 +687,15 @@ This resource returns a specific campaign created by this user.
     200 => OK
 
 
-### Get User Paid Campaigns
+### List User Paid Campaigns
 
 This resource returns all the campaigns that the user paid for.
 
     GET /users/:id/paid_campaigns
 
-    $ curl -u key:secret \
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5/campaigns/CMP96B
 
 #### Response Body
@@ -712,8 +750,10 @@ This resource returns all the campaigns that the user paid for.
 
     POST /users/:id/cards
 
-    $ curl -X POST -u key:secret -H Content-Type:application/json\
-    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards\
+#### Example Request
+
+    $ curl -X POST -u key:secret -H Content-Type:application/json \
+    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards \
     -d'
     {
         "card": {
@@ -722,8 +762,7 @@ This resource returns all the campaigns that the user paid for.
             "expiration_month":"01",
             "number":"4111111111111111"
         }
-    }
-    '
+    }'
 
 #### Response Body
 
@@ -753,8 +792,10 @@ This resource returns all the campaigns that the user paid for.
 
     GET /users/:id/cards/:id
 
-    $ curl -u key:secret \
-    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards/CCP6D6
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards/CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0
 
 #### Response Body
 
@@ -779,9 +820,12 @@ This resource returns all the campaigns that the user paid for.
 
 ### List User Cards
 
-#### Request
-
     GET /users/:id/cards
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards
 
 #### Response Body
 
@@ -808,31 +852,34 @@ request.  Other fields submitted will be ignored.
 
     PUT /users/:id/cards/:id
 
-#### Request Body
+#### Example Request
 
+    $ curl -X PUT -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards/CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0 \
+    -d'
     {
         "card": {
             "metadata" : {
                 "key1" : "value1"
             }
         }
-    }
+    }'
 
 #### Response Body
 
     {
         "card": {
             "last_four" : "1234",
-                "expiration_year" : 2034,
-                "expiration_month" : "04",
-                "user": { "id": "USR50A", ... },
-                "uri" : "/v1/users/USR50A/cards/CCP6D6",
-                "card_type" : null,
-                "creation_date" : "2012-08-23T07:42:46.134467000Z",
-                "metadata" : {
-                    "key1" : "value1"
-                },
-                "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0"
+            "expiration_year" : 2034,
+            "expiration_month" : "04",
+            "user": { "id": "USR50A", ... },
+            "uri" : "/v1/users/USR50A/cards/CCP6D6",
+            "card_type" : null,
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "metadata" : {
+                "key1" : "value1"
+            },
+            "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0"
         }
     }
 
@@ -844,6 +891,11 @@ request.  Other fields submitted will be ignored.
 ### Delete User Card
 
     DELETE /users/:id/cards/:id
+
+#### Example Request
+
+    $ curl -X DELETE -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR50A/cards/CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0
 
 #### Response Codes
 
@@ -857,6 +909,11 @@ Note that the `bank_code` field is also referred to as a "routing number" in the
 
     POST /users/:id/banks
 
+#### Example Request
+
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks \
+    -d'
     {
         "bank": {
             "account_number" : "1234567890",
@@ -885,29 +942,6 @@ Note that the `bank_code` field is also referred to as a "routing number" in the
     201 => Created
 
 
-### Get User Bank
-
-    GET /users/:id/banks/:id
-
-#### Response Body
-
-    {
-        "bank" : {
-            "account_number_last_four" : "7890",
-            "metadata" : {},
-            "id" : "BAP688",
-            "is_default" : 0,
-            "name" : "John Doe",
-            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "4851",
-            "uri" : "/v1/users/USR54B/banks/BAP688"
-        }
-    }
-
-#### Response Codes
-
-    200 => OK
-
 ### Make User Bank Default
 
 Before a bank account will be sent money, it must be marked as the default
@@ -916,9 +950,14 @@ following request:
 
     POST /users/:id/banks/default
 
+#### Example Request
+
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks/default \
+    -d'
     {
         "bank": { "id" : "BAP688" }
-    }
+    }'
 
 #### Response Body
 
@@ -945,6 +984,11 @@ To get the current default bank for a user, you can simply request:
 
     GET /users/:id/banks/default
 
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks/default
+
 #### Response Body
 
     {
@@ -964,11 +1008,44 @@ To get the current default bank for a user, you can simply request:
 
     200 => OK
 
+### Get User Bank
+
+    GET /users/:id/banks/:id
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks/BAP688
+
+#### Response Body
+
+    {
+        "bank" : {
+            "account_number_last_four" : "7890",
+            "metadata" : {},
+            "id" : "BAP688",
+            "is_default" : 0,
+            "name" : "John Doe",
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "bank_code_last_four" : "4851",
+            "uri" : "/v1/users/USR54B/banks/BAP688"
+        }
+    }
+
+#### Response Codes
+
+    200 => OK
+
 ### List User Banks
 
 This resource lists the bank accounts associated with this user.
 
     GET /users/:id/banks
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks
 
 #### Response Body
 
@@ -1006,8 +1083,11 @@ request.  Other fields submitted will be ignored.
 
     PUT /users/:id/banks/:id
 
-#### Request Body
+#### Example Request
 
+    $ curl -X PUT -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks/BAP688 \
+    -d'
     {
         "bank" : {
             "metadata" : {
@@ -1042,7 +1122,12 @@ request.  Other fields submitted will be ignored.
 
     DELETE /users/:id/banks/:id
 
-### Response Codes
+#### Example Request
+
+    $ curl -X DELETE -HContent-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks/BAP688
+
+#### Response Codes
 
     200 => OK
 
@@ -1052,6 +1137,11 @@ request.  Other fields submitted will be ignored.
 ### List User Payments
 
     GET /users/:id/payments
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/users/USR54B/payments
 
 #### Response Body
 
@@ -1186,19 +1276,26 @@ verified. However, they need to be
 [verified](#verify-user) in order to [set up their bank account details](#create-user-bank)
 and then be able to receive the money collected in their campaign.
 
+The metadata field is a great place to store references to other campaign assets, such as
+a campaign image.
+
     POST /campaigns
 
-#### Request Body
-
+#### Example Request
+    
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns \
+    -d'
     {
         "campaign": {
             "user_id":"USREC5",
             "title":"Campaign Title",
             "description":"some description",
             "expiration_date":"2000-01-02T01:02:03Z",
-            "tilt_amount":100
+            "tilt_amount":100,
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" }
         }
-    }
+    }'
 
 #### Response Body
 
@@ -1216,7 +1313,6 @@ and then be able to receive the money collected in their campaign.
             "expiration_date": "2000-01-02T01:02:03Z",
             "creation_date": "2000-01-02T01:02:03Z",
             "modification_date": "2000-01-02T01:02:03Z",
-            "img": null,
             "is_tilted": 0,
             "is_paid": 0,
             "is_expired": 0,
@@ -1225,7 +1321,7 @@ and then be able to receive the money collected in their campaign.
             "uri": "/v1/campaigns/CMPBDA",
             "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
             "payments_uri": "/v1/campaigns/CMPBDA/payments",
-            "metadata": { },
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
             "stats": {
                 "tilt_percent": 0,
                 "raised_amount": 0,
@@ -1244,6 +1340,11 @@ and then be able to receive the money collected in their campaign.
 
     GET  /campaigns/:id
 
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPBDA
+
 #### Response Body
 
     {
@@ -1260,7 +1361,6 @@ and then be able to receive the money collected in their campaign.
             "expiration_date": "2000-01-02T01:02:03Z",
             "creation_date": "2000-01-02T01:02:03Z",
             "modification_date": "2000-01-02T01:02:03Z",
-            "img": "https://url.to/img.jpg",
             "is_tilted": 0,
             "is_paid": 0,
             "is_expired": 0,
@@ -1269,7 +1369,7 @@ and then be able to receive the money collected in their campaign.
             "uri": "/v1/campaigns/CMPBDA",
             "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
             "payments_uri": "/v1/campaigns/CMPBDA/payments",
-            "metadata": { },
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
             "stats": {
                 "tilt_percent": 0,
                 "raised_amount": 0,
@@ -1287,6 +1387,11 @@ and then be able to receive the money collected in their campaign.
 ### List campaigns
 
     GET /campaigns
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns
 
 #### Response Body
 
@@ -1311,7 +1416,6 @@ and then be able to receive the money collected in their campaign.
                 "expiration_date": "2000-01-02T01:02:03Z",
                 "creation_date": "2000-01-02T01:02:03Z",
                 "modification_date": "2000-01-02T01:02:03Z",
-                "img": "https://url.to/img.jpg",
                 "is_tilted": 0,
                 "is_paid": 0,
                 "is_expired" : 0,
@@ -1320,7 +1424,7 @@ and then be able to receive the money collected in their campaign.
                 "uri": "/v1/campaigns/CMPBDA",
                 "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
                 "payments_uri": "/v1/campaigns/CMPBDA/payments",
-                "metadata": { },
+                "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
                 "stats": {
                     "tilt_percent": 0,
                     "raised_amount": 0,
@@ -1346,13 +1450,24 @@ to update a single attribute without having to send the full [campaign object](/
 
     PUT /campaigns/:id
 
+#### Example Request
+
+    $ curl -X PUT -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPBDA \
+    -d'
+    {
+        "campaign": {
+            "title":"A Different Campaign Title",
+        }
+    }'    
+
 #### Response Body
 
     {
         "campaign": {
             "id": "CMPBDA",
             "user_id": "USREC5",
-            "title": "Campaign Title",
+            "title": "A Different Campaign Title",
             "description": "some description",
             "privacy": 1,
             "type": 1,
@@ -1362,7 +1477,6 @@ to update a single attribute without having to send the full [campaign object](/
             "expiration_date": "2000-01-02T01:02:03Z",
             "creation_date": "2000-01-02T01:02:03Z",
             "modification_date": "2000-01-02T01:02:03Z",
-            "img": "https://url.to/img.jpg",
             "is_tilted": 0,
             "is_paid": 0,
             "is_expired": 0,
@@ -1371,7 +1485,7 @@ to update a single attribute without having to send the full [campaign object](/
             "uri": "/v1/campaigns/CMPBDA",
             "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
             "payments_uri": "/v1/campaigns/CMPBDA/payments",
-            "metadata": { },
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
             "stats": {
                 "tilt_percent": 0,
                 "raised_amount": 0,
@@ -1408,6 +1522,11 @@ the admin will only receive `$19.60` from the `$20.00` payment.
 
     POST /campaigns/:id/payments
 
+#### Example Request
+
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPBDA/payments \   
+    -d'
     {
         "payment": {
             "amount" : 2000,
@@ -1416,7 +1535,7 @@ the admin will only receive `$19.60` from the `$20.00` payment.
             "user_id": "USR521",
             "card_id": "CCPC41"
         }
-    }
+    }'
 
 
 #### Response Body
@@ -1447,6 +1566,11 @@ the admin will only receive `$19.60` from the `$20.00` payment.
 
     GET /campaigns/:id/payments/:id
 
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMP96B/payments/CON233
+
 #### Response Body
 
     {
@@ -1471,7 +1595,6 @@ the admin will only receive `$19.60` from the `$20.00` payment.
     200 => OK
 
 
-
 ### Update campaign payment
 
 You may update the credit card for payments.
@@ -1479,11 +1602,16 @@ Note that you may only do this for payments with a status of "rejected".
 
     PUT /campaigns/:id/payments/:id
 
+#### Example Request
+
+    $ curl -X PUT -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMP96B/payments/CON233 \
+    -d'
     {
         "payment": {
             "card_id": "CCPC42"
         }
-    }
+    }'
 
 
 #### Response Body
@@ -1510,9 +1638,14 @@ Note that you may only do this for payments with a status of "rejected".
     200 => OK
 
 
-### Get campaign payments
+### List campaign payments
 
     GET /campaigns/:id/payments
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMP96B/payments
 
 #### Response Body
 
@@ -1549,6 +1682,11 @@ Note that you may only do this for payments with a status of "rejected".
 ### Get rejected payments
 
     GET /campaigns/:id/rejected_payments
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMP96B/rejected_payments
 
 #### Response Body
 
@@ -1591,12 +1729,15 @@ refund subresource.
 
     POST /campaigns/:id/payments/:id/refund
 
-    $ curl -X POST -u key:secret \
+#### Example Request
+
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/campaigns/CMP96B/payments/CON233/refund
 
 #### Response Codes
 
     200 => OK
+
 
 ## Campaign Settlements
 
@@ -1622,23 +1763,53 @@ campaign settlement are:
 * `cleared` - this means that the funds have cleared the bank account and the
   settlement has completed successfully.
 
+### Get Campaign Settlement
+
+    GET /campaigns/:id/settlements/:id
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/settlements/SMTD88
+
+#### Response
+
+    {
+        "settlement" : {
+            "id" : "SMTD88",
+            "status" : "pending",
+            "admin_amount" : 1960,
+            "escrow_amount" : 40,
+            "modification_date" : "2012-10-29T15:34:48.177091000Z",
+            "creation_date" : "2012-10-29T15:34:48.177091000Z",
+            "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
+            "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
+            "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... }
+        }
+    }
+
 ### List Campaign Settlements
 
     GET /campaigns/:id/settlements
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/settlements
 
 #### Response
 
     "settlements" : [
         {
             "id" : "SMTD88",
-                "status" : "pending",
-                "admin_amount" : 1960,
-                "escrow_amount" : 40,
-                "modification_date" : "2012-10-29T15:34:48.177091000Z",
-                "creation_date" : "2012-10-29T15:34:48.177091000Z",
-                "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
-                "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
-                "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... }
+            "status" : "pending",
+            "admin_amount" : 1960,
+            "escrow_amount" : 40,
+            "modification_date" : "2012-10-29T15:34:48.177091000Z",
+            "creation_date" : "2012-10-29T15:34:48.177091000Z",
+            "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
+            "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
+            "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... }
         },
         .
         .
@@ -1651,27 +1822,6 @@ campaign settlement are:
         "per_page" : 50
     }
 
-
-### Get Campaign Settlement
-
-    GET /campaigns/:id/settlements/:id
-
-#### Response
-
-    {
-        "settlement" : {
-            "id" : "SMTD88",
-                "status" : "pending",
-                "admin_amount" : 1960,
-                "escrow_amount" : 40,
-                "modification_date" : "2012-10-29T15:34:48.177091000Z",
-                "creation_date" : "2012-10-29T15:34:48.177091000Z",
-                "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
-                "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
-                "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... }
-        }
-    }
-
 ### Update Campaign Settlement Bank
 
 A Campaign Settlement can only be updated if the status is `needs bank account`.
@@ -1680,11 +1830,14 @@ account to re-attempt the settlement with.
 
     POST /campaigns/:id/settlements/:id/bank
 
-#### Request
+#### Example Request
 
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/settlements/SMTD88/bank \
+    -d'
     {
         "bank" : { "id" : "BAPCA4" }
-    }
+    }'
 
 ## Campaign Comments
 
@@ -1702,6 +1855,11 @@ The purpose of the `score` field is to provide support for voting on comments.
 
     POST /campaigns/:id/comments
 
+#### Example Request
+
+    $ curl -X POST -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/comments
+    -d'
     {
         "comment" : {
             "user_id' : "USR123",
@@ -1710,7 +1868,7 @@ The purpose of the `score` field is to provide support for voting on comments.
             "score" : 1,
             "parent_id" : null
         }
-    }
+    }'
 
 #### Response
 
@@ -1718,6 +1876,7 @@ The purpose of the `score` field is to provide support for voting on comments.
         "comment" : {
             "id" : "CMT123",
             "user_id' : "USR123",
+            "campaign_id" : "CMPCCC",
             "title" : "Optional Title",
             "body" : "Comment Body",
             "score" : 1,
@@ -1732,15 +1891,23 @@ The purpose of the `score` field is to provide support for voting on comments.
 
     200 => OK
 
-### Get Campaign Comments
+### List Campaign Comments
 
-#### Response
+    GET /campaigns/:id/comments
+
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/comments
+
+#### Response Body
 
     {
         "comments" : [
             {
                 "id" : "CMT123",
                 "user_id' : "USR123",
+                "campaign_id" : "CMPCCC",
                 "title" : "Optional Title",
                 "body" : "Comment Body",
                 "score" : 1,
@@ -1761,12 +1928,18 @@ The purpose of the `score` field is to provide support for voting on comments.
 
     GET /campaigns/:id/comments/:id
 
-#### Response
+#### Example Request
+
+    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/comments/CMT123
+
+#### Response Body
 
     {
         "comment" : {
             "id" : "CMT123",
             "user_id' : "USR123",
+            "campaign_id" : "CMPCCC",
             "title" : "Optional Title",
             "body" : "Comment Body",
             "score" : 1,
@@ -1777,7 +1950,7 @@ The purpose of the `score` field is to provide support for voting on comments.
         }
     }
 
-#### Response Code
+#### Response Codes
 
     200 => OK
 
@@ -1787,8 +1960,11 @@ Currently you can only alter the score and the metadata of a comment.
 
     PUT /campaigns/:id/comments/:id
 
-#### Request
+#### Example Request
 
+    $ curl -X PUT -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/comments/CMT123 \
+    -d'
     {
         "comment" : {
             "score" : 2,
@@ -1796,9 +1972,9 @@ Currently you can only alter the score and the metadata of a comment.
                 "key" : "value",
             }
         }
-    }
+    }'
 
-#### Response
+#### Response Body
 
     {
         "comment" : {
@@ -1816,7 +1992,7 @@ Currently you can only alter the score and the metadata of a comment.
         }
     }
 
-#### Response Code
+#### Response Codes
 
     200 => OK
 
@@ -1824,9 +2000,15 @@ Currently you can only alter the score and the metadata of a comment.
 
     DELETE /campaigns/:id/comments/:id
 
+#### Example Request
+
+    $ curl -X DELETE -H Content-Type:application/json -u key:secret \
+    https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/comments/CMT123
+    
 #### Response Codes
 
     200 => OK
+
 
 ## API Examples
 
@@ -1840,7 +2022,7 @@ create two users, an admin, and a contributor.
         https://api-sandbox.crowdtilt.com/v1/users \
         -d'{
             "user":{
-                "email" : "user@gmail.com"
+                "email"    : "user@gmail.com"
             }
         }'
 
@@ -1903,57 +2085,55 @@ second user to make a payment on the campaign.
                 "expiration_date" : "2012-10-31T12:00:00Z",
                 "title" : "Halloween Awesome Fest",
                 "description" : "This will be the best thing ever!",
-                "tilt_amount" : 300000
+                "tilt_amount" : 300000,
             }
         }'
 
     # Response
     {
         "campaign" : {
-            "img" : null,
-                "tilter" : null,
-                "min_payment_amount" : 0,
-                "first_contributor" : null,
+            "tilter" : null,
+            "min_payment_amount" : 0,
+            "first_contributor" : null,
+            "metadata" : {},
+            "id" : "CMP542",
+            "is_paid" : 0,
+            "settlements_uri" : "/v1/campaigns/CMP542/settlements",
+            "privacy" : 1,
+            "admin" : {
+                "firstname" : null,
+                "paid_campaigns_uri" : "/v1/users/USRC55/paid_campaigns",
+                "email" : "user@gmail.com",
                 "metadata" : {},
-                "id" : "CMP542",
-                "is_paid" : 0,
-                "settlements_uri" : "/v1/campaigns/CMP542/settlements",
-                "privacy" : 1,
-                "admin" : {
-                    "firstname" : null,
-                    "paid_campaigns_uri" : "/v1/users/USRC55/paid_campaigns",
-                    "img" : null,
-                    "email" : "user@gmail.com",
-                    "metadata" : {},
-                    "id" : "USRC55",
-                    "uri" : "/v1/users/USRC55",
-                    "creation_date" : "2012-10-31T00:41:55Z",
-                    "campaigns_uri" : "/v1/users/USRC55/campaigns",
-                    "last_login_date" : "2012-10-30T17:41:55.834029000Z",
-                    "lastname" : null,
-                    "payments_uri" : "/v1/users/USRC55/payments",
-                    "is_verified" : 0
-                },
-                "is_expired" : 0,
-                "fixed_payment_amount" : 0,
-                "tilt_amount" : 300000,
-                "description" : "This will be the best thing ever!",
-                "uri" : "/v1/campaigns/CMP542",
-                "creation_date" : "2012-11-01T13:40:10.153237000Z",
-                "user_id" : "USRC55",
-                "title" : "Halloween Awesome Fest",
-                "payments_uri" : "/v1/campaigns/CMP542/payments",
-                "modification_date" : "2012-11-01T13:40:10.153237000Z",
-                "stats" : {
-                    "tilt_percent" : 0,
-                    "raised_amount" : 0,
-                    "unique_contributors" : 0,
-                    "number_of_contributions" : 0
-                },
-                "expiration_date" : "2012-10-31T12:00:00Z",
-                "is_tilted" : 0,
-                "tax_id" : null,
-                "tax_name" : null
+                "id" : "USRC55",
+                "uri" : "/v1/users/USRC55",
+                "creation_date" : "2012-10-31T00:41:55Z",
+                "campaigns_uri" : "/v1/users/USRC55/campaigns",
+                "last_login_date" : "2012-10-30T17:41:55.834029000Z",
+                "lastname" : null,
+                "payments_uri" : "/v1/users/USRC55/payments",
+                "is_verified" : 0
+            },
+            "is_expired" : 0,
+            "fixed_payment_amount" : 0,
+            "tilt_amount" : 300000,
+            "description" : "This will be the best thing ever!",
+            "uri" : "/v1/campaigns/CMP542",
+            "creation_date" : "2012-11-01T13:40:10.153237000Z",
+            "user_id" : "USRC55",
+            "title" : "Halloween Awesome Fest",
+            "payments_uri" : "/v1/campaigns/CMP542/payments",
+            "modification_date" : "2012-11-01T13:40:10.153237000Z",
+            "stats" : {
+                "tilt_percent" : 0,
+                "raised_amount" : 0,
+                "unique_contributors" : 0,
+                "number_of_contributions" : 0
+            },
+            "expiration_date" : "2012-10-31T12:00:00Z",
+            "is_tilted" : 0,
+            "tax_id" : null,
+            "tax_name" : null
         }
     }
 
@@ -2008,13 +2188,11 @@ Now we'll create a payment by the paying user to the campaign we created.
            "status" : "authorized",
            "user_fee_amount" : "100",
            "campaign" : {
-              "img" : null,
               "tilter" : null,
               "min_payment_amount" : 0,
               "first_contributor" : {
                  "firstname" : "",
                  "paid_campaigns_uri" : "/v1/users/USRE32/paid_campaigns",
-                 "img" : null,
                  "email" : "payer@gmail.com",
                  "metadata" : {},
                  "id" : "USRE32",
@@ -2034,7 +2212,6 @@ Now we'll create a payment by the paying user to the campaign we created.
               "admin" : {
                  "firstname" : "",
                  "paid_campaigns_uri" : "/v1/users/USRC55/paid_campaigns",
-                 "img" : null,
                  "email" : "user@gmail.com",
                  "metadata" : {},
                  "id" : "USRC55",
@@ -2069,7 +2246,6 @@ Now we'll create a payment by the paying user to the campaign we created.
            "user" : {
               "firstname" : "",
               "paid_campaigns_uri" : "/v1/users/USR962FB8E0246611E2AEDE84A52A776874/paid_campaigns",
-              "img" : null,
               "email" : "payer@gmail.com",
               "metadata" : {},
               "id" : "USRE32",
@@ -2128,16 +2304,17 @@ where you will be collecting credit card or bank account information:
     <script type="text/javascript" src="https://api.crowdtilt.com/v1/js/crowdtilt.js"></script>
 
 ### Initialize the crowdtilt object
-In a separate script tag, initialize the crowdtilt object:
+In a separate script tag, initialize the crowdtilt object. NOTE: this defaults to using the sandbox api when 
+no parameter is passed to the init method:
 
     <script type="text/javascript">
         crowdtilt.init();
     </script>
     
-IMPORTANT NOTE: If you are working in the sandbox, pass 'sandbox' in as a parameter:
+Once you are ready to go to production, pass 'production' as a parameter:
 
     <script type="text/javascript">
-        crowdtilt.init('sandbox');
+        crowdtilt.init('production');
     </script>
 
 ### Make sure to create users first
@@ -2509,12 +2686,6 @@ This section outlines the full definition of our resources.
             <td>Whether this user is verified to receive money</td>
         </tr>
         <tr>
-            <td>img</td>
-            <td>string</td>
-            <td>No</td>
-            <td>A url for user's image</td>
-        </tr>
-        <tr>
             <td>creation_date</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
@@ -2533,7 +2704,7 @@ This section outlines the full definition of our resources.
             <td>metadata</td>
             <td>JSON object</td>
             <td>No</td>
-            <td>Key-Value pair for any extra data the API consumer wants to store.</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store. For example, a reference to the URL of a user's profile image.</td>
         </tr>
         <tr>
             <td>uri</td>
@@ -2563,6 +2734,76 @@ This section outlines the full definition of our resources.
 </table>
 
 
+## Card Definition
+
+<table>
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Type</th>
+            <th>Required</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>A unique identifier for the card</td>
+        </tr>
+        <tr>
+            <td>last_four</td>
+            <td>string</td>
+            <td>Read-Only</td>
+            <td>Last four digits of credit card number</td>
+        </tr>
+        <tr>
+            <td>expiration_month</td>
+            <td>string</td>
+            <td>Yes</td>
+            <td>Expiration month (string representing 2 digits)</td>
+        </tr>
+        <tr>
+            <td>expiration_year</td>
+            <td>number</td>
+            <td>Yes</td>
+            <td>Expiration year (4 digit number)</td>
+        </tr>
+        <tr>
+            <td>card_type</td>
+            <td>string</td>
+            <td>Read-Only</td>
+            <td>Identifies the card's brand (VISA, Mastercard, etc)</td>
+        </tr>
+        <tr>
+            <td>user</td>
+            <td>JSON object</td>
+            <td>Read-Only</td>
+            <td> The user object that owns this card</td>
+        </tr>
+        <tr>
+            <td>metadata</td>
+            <td>JSON object</td>
+            <td>No</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store.</td>
+        </tr>
+        <tr>
+            <td>uri</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>The uri for this user resource</td>
+        </tr>
+        <tr>
+            <td>creation_date</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>It is ISO8601 DateTime format</td>
+        </tr>
+    </tbody>
+</table>
+
+
 ## Bank Definition
 
 <table>
@@ -2577,7 +2818,7 @@ This section outlines the full definition of our resources.
     <tbody>
         <tr>
             <td>id</td>
-            <td>String</td>
+            <td>string</td>
             <td>Auto generated and read-only</td>
             <td>A unique identifier for the bank</td>
         </tr>
@@ -2674,12 +2915,6 @@ This section outlines the full definition of our resources.
             <td>string</td>
             <td>Yes</td>
             <td>The description of the campaign</td>
-        </tr>
-        <tr>
-            <td>img</td>
-            <td>string</td>
-            <td>No</td>
-            <td>A URI to an image to be used for the campaign</td>
         </tr>
         <tr>
             <td>is_expired</td>
@@ -2854,7 +3089,7 @@ This section outlines the full definition of our resources.
             <td>metadata</td>
             <td>JSON object</td>
             <td>No</td>
-            <td>Key-Value pair for any extra data the API consumer wants to store.</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store. For example, a reference to the URL of a campaign image.</td>
         </tr>
         <tr>
             <td>stats</td>
@@ -3127,7 +3362,6 @@ of **50** entries per page. For example:
                 "email": "foo.bar@gmail.com",
                 "firstname": "Foo",
                 "lastname": "Bar",
-                "img": "https://example.com/profile.png",
                 "is_verified": 1,
                 "creation_date": "2011-07-02T14:20:48Z",
                 "last_login_date": "2012-09-22T01:55:49Z",
