@@ -2454,11 +2454,11 @@ These handy functions let you validate user input on the client side, leading to
 
 Checks that the number is formatted correctly and passes the <a href="http://en.wikipedia.org/wiki/Luhn_algorithm" target="_blank">Luhn check</a>. Note that spaces and other punctuation are ignored.
 
-    crowdtilt.isCardNumberValid('4111111111111111');      // true
-    crowdtilt.isCardNumberValid('4111-1111-1111-1111');   // true
-    crowdtilt.isCardNumberValid('4111 1111 1111 1111');   // true
-    crowdtilt.isCardNumberValid('123456');                // false, too short
-    crowdtilt.isCardNumberValid('4242-1111-1111-1111');   // false, doesn't pass Luhn check
+    crowdtilt.card.isCardNumberValid('4111111111111111');      // true
+    crowdtilt.card.isCardNumberValid('4111-1111-1111-1111');   // true
+    crowdtilt.card.isCardNumberValid('4111 1111 1111 1111');   // true
+    crowdtilt.card.isCardNumberValid('123456');                // false, too short
+    crowdtilt.card.isCardNumberValid('4242-1111-1111-1111');   // false, doesn't pass Luhn check
 
 **Determining Card Brand**
 
@@ -2506,9 +2506,9 @@ Returns:
 
 Use ONLY for USA-based bank accounts. Checks against the <a href="http://en.wikipedia.org/wiki/Routing_transit_number#MICR_Routing_number_format" target="_blank">MICR Routing Number Format</a>
 
-    crowdtilt.bankAccount.validateUSARoutingNumber('321174851') // passes
-    crowdtilt.bankAccount.validateUSARoutingNumber('021000021') // passes
-    crowdtilt.bankAccount.validateUSARoutingNumber('123457890') // fails
+    crowdtilt.bank.validateUSARoutingNumber('321174851') // passes
+    crowdtilt.bank.validateUSARoutingNumber('021000021') // passes
+    crowdtilt.bank.validateUSARoutingNumber('123457890') // fails
 
 
 ### Tokenization Examples
