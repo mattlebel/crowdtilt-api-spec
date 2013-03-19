@@ -244,13 +244,6 @@ pairs that did not change.
             <td> List of users </td>
         </tr>
         <tr>
-            <td>/users/authentication</td>
-            <td>
-                <a href="#authenticate-user">GET</a>
-            </td>
-            <td> Authenticate a user</td>
-        </tr>
-        <tr>
             <td>/users/:id</td>
             <td>
                 <a href="#get-user">GET</a>
@@ -415,38 +408,6 @@ will be set to 1 to reflect this change.
     200 => OK
     400 => Bad Data, or Could not Verify admin information
     449 => Retry with SSN
-
-
-### Authenticate User
-
-To authenticate a user, you can pass in the user's login credentials, email and
-password, as query parameters.
-
-    GET /users/authentication?email=user@example.com&password=mypassword
-
-#### Example Request
-
-    $ curl -X GET -H Content-Type:application/json -u key:secret \
-    https://api-sandbox.crowdtilt.com/users/authentication?email=user@example.com&password=mypassword
-
-#### Response Body
-
-    {
-       "user" : {
-          "id" : "USRB07",
-          "firstname" : "foo",
-          "lastname" : "bar",
-          "email" : "user@example.com",
-          "is_verified" : 0,
-          "creation_date" : "2012-09-26T10:22:03.900529000Z",
-          "last_login_date" : "2012-09-26T17:22:20Z"
-       }
-    }
-
-#### Response Codes
-
-    302 => Found
-    401 => Unauthorized
 
 
 ### Get User
