@@ -270,14 +270,7 @@ pairs that did not change.
             <td>
                 <a href="#get-user-campaigns">GET</a>
             </td>
-            <td> All campaigns the user is involved with </td>
-        </tr>
-        <tr>
-            <td>/users/:id/paid_campaigns</td>
-            <td>
-                <a href="#get-user-paid-campaigns">GET</a>
-            </td>
-            <td> Campaigns this user paid for </td>
+            <td> All campaigns this user is admin of </td>
         </tr>
         <tr>
             <td>/users/:id/cards</td>
@@ -358,10 +351,11 @@ a profile image.
             "lastname": "Bar",
             "is_verified": 0,
             "creation_date": "2011-07-02T14:20:48Z",
-            "last_login_date": "2012-09-22T01:55:49Z",
+            "modification_date": "2011-09-02T14:20:48Z",
             "uri": "/v1/users/USREC5",
+            "cards_uri": "/v1/users/USREC5/cards",
+            "banks_uri": "/v1/users/USREC5/banks",
             "campaigns_uri": "/v1/users/USREC5/campaigns",
-            "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
             "payments_uri": "/v1/users/USREC5/payments",
             "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
         }
@@ -472,12 +466,13 @@ password, as query parameters.
             "email": "foo.bar@gmail.com",
             "firstname": "Foo",
             "lastname": "Bar",
-            "is_verified": 1,
+            "is_verified": 0,
             "creation_date": "2011-07-02T14:20:48Z",
-            "last_login_date": "2012-09-22T01:55:49Z",
+            "modification_date": "2011-09-02T14:20:48Z",
             "uri": "/v1/users/USREC5",
+            "cards_uri": "/v1/users/USREC5/cards",
+            "banks_uri": "/v1/users/USREC5/banks",
             "campaigns_uri": "/v1/users/USREC5/campaigns",
-            "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
             "payments_uri": "/v1/users/USREC5/payments",
             "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
         }
@@ -501,9 +496,10 @@ password, as query parameters.
 
     {
         "pagination": {
-            "total_pages": 1,
             "page": 1,
-            "total_entries": 2,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
             "per_page": 50
         },
         "users": [
@@ -514,10 +510,11 @@ password, as query parameters.
                 "lastname": "Bar",
                 "is_verified": 0,
                 "creation_date": "2011-07-02T14:20:48Z",
-                "last_login_date": "2012-09-22T01:55:49Z",
+                "modification_date": "2011-09-02T14:20:48Z",
                 "uri": "/v1/users/USREC5",
+                "cards_uri": "/v1/users/USREC5/cards",
+                "banks_uri": "/v1/users/USREC5/banks",
                 "campaigns_uri": "/v1/users/USREC5/campaigns",
-                "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
                 "payments_uri": "/v1/users/USREC5/payments",
                 "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
             },
@@ -542,7 +539,7 @@ to update a single attribute without having to send the full
 
 #### Example Request
 
-    $ curl -X GET -H Content-Type:application/json -u key:secret \
+    $ curl -X PUT -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USREC5 \
     -d'
     {
@@ -561,10 +558,11 @@ to update a single attribute without having to send the full
             "lastname": "new last name",
             "is_verified": 0,
             "creation_date": "2011-07-02T14:20:48Z",
-            "last_login_date": "2012-09-22T01:55:49Z",
+            "modification_date": "2011-09-02T14:20:48Z",
             "uri": "/v1/users/USREC5",
+            "cards_uri": "/v1/users/USREC5/cards",
+            "banks_uri": "/v1/users/USREC5/banks",
             "campaigns_uri": "/v1/users/USREC5/campaigns",
-            "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
             "payments_uri": "/v1/users/USREC5/payments",
             "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
         }
@@ -593,18 +591,16 @@ campaigns that he paid for.
 
     {
         "pagination": {
-            "total_pages": 0,
             "page": 1,
-            "total_entries": 0,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
             "per_page": 50
         },
         "campaigns": [
             {
                 "id": "CMPBDA",
-                "user_id": "USREC5",
                 "title": "Campaign Title",
-                "description": "some description",
-                "privacy": 1,
                 "tilt_amount": 100,
                 "min_payment_amount": 0,
                 "fixed_payment_amount": 0,
@@ -612,18 +608,21 @@ campaigns that he paid for.
                 "is_tilted": 0,
                 "is_paid": 0,
                 "is_expired": 0,
-                "tax_id": null,
-                "tax_name": null,
                 "uri": "/v1/campaigns/CMPBDA",
                 "payments_uri": "/v1/campaigns/CMPBDA/payments",
+                "settlements_uri": "/v1/campaigns/CMPBDA/settlements",
                 "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
-                "metadata": { },
+                "first_contributor": null,
+                "tilter": null,
                 "stats": {
                     "tilt_percent": 0,
                     "raised_amount": 0,
                     "unique_contributors": 0,
-                    "number_of_payments": 0
-                }
+                    "number_of_contributions": 0
+                },
+                "creation_date": "2011-07-02T14:20:48Z",
+                "modification_date": "2011-09-02T14:20:48Z",                
+                "metadata": { }            
             },
             .
             .
@@ -635,114 +634,6 @@ campaigns that he paid for.
 
     200 => OK
 
-
-### Get User Campaign
-
-This resource returns a specific campaign created by this user.
-
-    GET /users/:id/campaigns/:id
-
-#### Example Request
-
-    $ curl -X GET -H Content-Type:application/json -u key:secret \
-    https://api-sandbox.crowdtilt.com/v1/users/USREC5/campaigns/CMP96B
-
-#### Response Body
-
-    {
-       "campaign" : {
-          "metadata" : { },
-          "id" : "CMP96B",
-          "is_paid" : 0,
-          "privacy" : 1,
-          "is_expired" : 1,
-          "fixed_payment_amount" : 0,
-          "tilt_amount" : 100,
-          "description" : "some description",
-          "uri" : "/v1/campaigns/CMP96B",
-          "creation_date" : "2012-10-19T15:09:01.869085000Z",
-          "first_contributor" : { "id" : "USR123", "uri" : "/v1/users/USR123", ... },
-          "tilter" : { "id" : "USR456", "uri" : "/v1/users/USR456", ... },
-          "user_id" : "USR521",
-          "title" : "some title",
-          "modification_date" : "2012-10-19T15:09:01.869085000Z",
-          "stats" : {
-             "tilt_percent" : 0,
-             "raised_amount" : 0,
-             "unique_contributors" : 0,
-             "number_of_payments" : 0
-          },
-          "expiration_date" : "2000-01-02T01:02:03Z",
-          "is_tilted" : 0,
-          "admin": { "id": "USREC5", ... },
-          "min_payment_amount" : 0,
-          "tax_id" : null,
-          "tax_name" : null,
-          "payments_uri" : "/v1/campaigns/CMP96B/payments"
-       }
-    }
-
-#### Response Codes
-
-    200 => OK
-
-
-### List User Paid Campaigns
-
-This resource returns all the campaigns that the user paid for.
-
-    GET /users/:id/paid_campaigns
-
-#### Example Request
-
-    $ curl -X GET -H Content-Type:application/json -u key:secret \
-    https://api-sandbox.crowdtilt.com/v1/users/USREC5/campaigns/CMP96B
-
-#### Response Body
-
-    {
-        "pagination": {
-            "total_pages": 0,
-            "page": 1,
-            "total_entries": 0,
-            "per_page": 50
-        },
-        "campaigns": [
-            {
-                "id": "CMPBDA",
-                "user_id": "USREC5",
-                "title": "Campaign Title",
-                "description": "some description",
-                "privacy": 1,
-                "tilt_amount": 100,
-                "min_payment_amount": 0,
-                "fixed_payment_amount": 0,
-                "expiration_date": "2000-01-02T01:02:03Z",
-                "is_tilted": 0,
-                "is_paid": 0,
-                "is_expired": 0,
-                "tax_id": null,
-                "tax_name": null,
-                "uri": "/v1/campaigns/CMPBDA",
-                "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
-                "payments_uri": "/v1/campaigns/CMPBDA/payments",
-                "metadata": { },
-                "stats": {
-                    "tilt_percent": 0,
-                    "raised_amount": 0,
-                    "unique_contributors": 0,
-                    "number_of_payments": 0
-                }
-            },
-            .
-            .
-            .
-        ]
-    }
-
-#### Response Codes
-
-    200 => OK
 
 ## User Cards
 
@@ -767,20 +658,18 @@ This resource returns all the campaigns that the user paid for.
 #### Response Body
 
     {
-        "cards" : [
-              {
-                 "last_four" : "1111",
-                 "expiration_year" : 2023,
-                 "expiration_month" : "01",
-                 "user": { "id" : "USR50A", "uri" : "/v1/users/USR50A", ... },
-                 "uri" : "/v1/users/USR50A/cards/CCP6D6",
-                 "card_type" : "VISA card",
-                 "creation_date" : "2012-08-23T07:42:46.134467000Z",
-                 "metadata" : {},
-                 "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0"
-              },
-              ...
-          ]
+        "card": {
+            "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0",
+            "last_four" : "1111",
+            "expiration_year" : 2023,
+            "expiration_month" : "01",
+            "user": { "id" : "USR50A", "uri" : "/v1/users/USR50A", ... },
+            "uri" : "/v1/users/USR50A/cards/CCP6D6",
+            "card_type" : "VISA card",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
+            "metadata" : {}
+        }
     }
 
 #### Response Codes
@@ -801,15 +690,16 @@ This resource returns all the campaigns that the user paid for.
 
     {
         "card": {
-            "last_four" : "1234",
-                "expiration_year" : 2034,
-                "expiration_month" : "04",
-                "user": { "id" : "USR50A", "uri" : "/v1/users/USR50A", ... },
-                "uri" : "/v1/users/USR50A/cards/CCP6D6",
-                "card_type" : null,
-                "creation_date" : "2012-08-23T07:42:46.134467000Z",
-                "metadata" : {},
-                "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0"
+            "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0",
+            "last_four" : "1111",
+            "expiration_year" : 2023,
+            "expiration_month" : "01",
+            "user": { "id" : "USR50A", "uri" : "/v1/users/USR50A", ... },
+            "uri" : "/v1/users/USR50A/cards/CCP6D6",
+            "card_type" : "VISA card",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
+            "metadata" : {}
         }
     }
 
@@ -831,12 +721,29 @@ This resource returns all the campaigns that the user paid for.
 
     {
         "pagination": {
-            "total_pages": 0,
             "page": 1,
-            "total_entries": 0,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
             "per_page": 50
         },
-        "cards": []
+        "cards" : [
+              {
+                 "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0",
+                 "last_four" : "1111",
+                 "expiration_year" : 2023,
+                 "expiration_month" : "01",
+                 "user": { "id" : "USR50A", "uri" : "/v1/users/USR50A", ... },
+                 "uri" : "/v1/users/USR50A/cards/CCP6D6",
+                 "card_type" : "VISA card",
+                 "creation_date" : "2012-08-23T07:42:46.134467000Z",
+                 "modification_date" : "2012-09-23T07:42:46.134467000Z",
+                 "metadata" : {}
+              },
+              .
+              .
+              .
+        ]
     }
 
 #### Response Codes
@@ -869,17 +776,18 @@ request.  Other fields submitted will be ignored.
 
     {
         "card": {
-            "last_four" : "1234",
-            "expiration_year" : 2034,
-            "expiration_month" : "04",
-            "user": { "id": "USR50A", ... },
+            "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0",
+            "last_four" : "1111",
+            "expiration_year" : 2023,
+            "expiration_month" : "01",
+            "user": { "id" : "USR50A", "uri" : "/v1/users/USR50A", ... },
             "uri" : "/v1/users/USR50A/cards/CCP6D6",
-            "card_type" : null,
+            "card_type" : "VISA card",
             "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
             "metadata" : {
                 "key1" : "value1"
-            },
-            "id" : "CCP6D6E7E7C0C5C11E2BD7001E2CFE628C0"
+            }
         }
     }
 
@@ -917,8 +825,8 @@ Note that the `bank_code` field is also referred to as a "routing number" in the
     {
         "bank": {
             "account_number" : "1234567890",
-            "name" : "Bank Name",
-            "bank_code" : "321174851",
+            "name" : "John Smith",
+            "bank_code" : "321174851"
         }
     }
 
@@ -926,14 +834,16 @@ Note that the `bank_code` field is also referred to as a "routing number" in the
 
     {
         "bank": {
-            "account_number_last_four" : "7890",
-            "metadata" : {},
             "id" : "BAP688",
-            "is_default" : 0,
-            "name" : "Bank Name",
-            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "account_number_last_four" : "7890",
             "bank_code_last_four" : "4851",
-            "uri" : "/v1/users/USR54B/banks/BAP688"
+            "name" : "John Smith",
+            "is_default" : 0,  
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "uri" : "/v1/users/USR54B/banks/BAP688",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
+            "metadata" : {}
         }
     }
 
@@ -963,14 +873,16 @@ following request:
 
     {
         "bank": {
-            "account_number_last_four" : "7890",
-            "metadata" : {},
-            "is_default" : 1,
             "id" : "BAP688",
-            "name" : "Bank Name",
-            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "account_number_last_four" : "7890",
             "bank_code_last_four" : "4851",
-            "uri" : "/v1/users/USR54B/banks/BAP688"
+            "name" : "John Smith",
+            "is_default" : 1,  
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "uri" : "/v1/users/USR54B/banks/BAP688",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
+            "metadata" : {}
         }
     }
 
@@ -993,14 +905,16 @@ To get the current default bank for a user, you can simply request:
 
     {
         "bank": {
-            "account_number_last_four" : "7890",
-            "metadata" : {},
-            "is_default" : 1,
             "id" : "BAP688",
-            "name" : "Bank Name",
-            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "account_number_last_four" : "7890",
             "bank_code_last_four" : "4851",
-            "uri" : "/v1/users/USR54B/banks/BAP688"
+            "name" : "John Smith",
+            "is_default" : 1,  
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "uri" : "/v1/users/USR54B/banks/BAP688",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
+            "metadata" : {}
         }
     }
 
@@ -1021,14 +935,16 @@ To get the current default bank for a user, you can simply request:
 
     {
         "bank" : {
-            "account_number_last_four" : "7890",
-            "metadata" : {},
             "id" : "BAP688",
-            "is_default" : 0,
-            "name" : "John Doe",
-            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "account_number_last_four" : "7890",
             "bank_code_last_four" : "4851",
-            "uri" : "/v1/users/USR54B/banks/BAP688"
+            "name" : "John Smith",
+            "is_default" : 0,  
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "uri" : "/v1/users/USR54B/banks/BAP688",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
+            "metadata" : {}
         }
     }
 
@@ -1051,22 +967,28 @@ This resource lists the bank accounts associated with this user.
 
     {
         "pagination": {
-            "total_pages": 0,
             "page": 1,
-            "total_entries": 0,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
             "per_page": 50
         },
         "banks": [
             {
-                "account_number_last_four" : "7890",
-                "metadata" : {},
                 "id" : "BAP688",
-                "is_default" : 0,
-                "name" : "John Doe",
-                "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+                "account_number_last_four" : "7890",
                 "bank_code_last_four" : "4851",
-                "uri" : "/v1/users/USR54B/banks/BAP688"
-            }
+                "name" : "John Smith",
+                "is_default" : 0,  
+                "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+                "uri" : "/v1/users/USR54B/banks/BAP688",
+                "creation_date" : "2012-08-23T07:42:46.134467000Z",
+                "modification_date" : "2012-09-23T07:42:46.134467000Z",
+                "metadata" : {}
+            },
+            .
+            .
+            .
         ]
     }
 
@@ -1100,16 +1022,18 @@ request.  Other fields submitted will be ignored.
 
     {
         "bank" : {
+            "id" : "BAP688",
             "account_number_last_four" : "7890",
+            "bank_code_last_four" : "4851",
+            "name" : "John Smith",
+            "is_default" : 0,  
+            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+            "uri" : "/v1/users/USR54B/banks/BAP688",
+            "creation_date" : "2012-08-23T07:42:46.134467000Z",
+            "modification_date" : "2012-09-23T07:42:46.134467000Z",
             "metadata" : {
                 "key1" : "value1"
-            },
-            "id" : "BAP688",
-            "is_default" : 0,
-            "name" : "John Doe",
-            "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
-            "bank_code_last_four" : "4851",
-            "uri" : "/v1/users/USR54B/banks/BAP688"
+            }
         }
     }
 
@@ -1124,7 +1048,7 @@ request.  Other fields submitted will be ignored.
 
 #### Example Request
 
-    $ curl -X DELETE -HContent-Type:application/json -u key:secret \
+    $ curl -X DELETE -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/users/USR54B/banks/BAP688
 
 #### Response Codes
@@ -1147,12 +1071,31 @@ request.  Other fields submitted will be ignored.
 
     {
         "pagination": {
-            "total_pages": 0,
             "page": 1,
-            "total_entries": 0,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
             "per_page": 50
         },
-        "payments": []
+        "payments": [
+            {
+              "id" : "CON234",
+              "status" : "charged",
+              "amount" : 2000,
+              "user_fee_amount" : 40,
+              "admin_fee_amount" : 40,
+              "uri" : "/v1/campaigns/CMP96B/payments/CON234",
+              "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
+              "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC42", ... },
+              "user": { "id" : "USR54B", "uri" : "/v1/users/USR54B", ... },
+              "creation_date" : "2012-10-20T15:45:13Z",
+              "modification_date" : "2012-10-20T15:45:47Z",            
+              "metadata" : {}
+            },
+            .
+            .
+            .        
+        ]
     }
 
 #### Response Codes
@@ -1277,7 +1220,7 @@ verified. However, they need to be
 and then be able to receive the money collected in their campaign.
 
 The metadata field is a great place to store references to other campaign assets, such as
-a campaign image.
+a campaign image or description.
 
     POST /campaigns
 
@@ -1290,7 +1233,6 @@ a campaign image.
         "campaign": {
             "user_id":"USREC5",
             "title":"Campaign Title",
-            "description":"some description",
             "expiration_date":"2000-01-02T01:02:03Z",
             "tilt_amount":100,
             "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" }
@@ -1302,32 +1244,29 @@ a campaign image.
     {
         "campaign": {
             "id": "CMPBDA",
-            "user_id": "USREC5",
             "title": "Campaign Title",
-            "description": "some description",
-            "privacy": 1,
-            "type": 1,
             "tilt_amount": 100,
             "min_payment_amount": 0,
             "fixed_payment_amount": 0,
             "expiration_date": "2000-01-02T01:02:03Z",
-            "creation_date": "2000-01-02T01:02:03Z",
-            "modification_date": "2000-01-02T01:02:03Z",
             "is_tilted": 0,
             "is_paid": 0,
             "is_expired": 0,
-            "tax_id": null,
-            "tax_name": null,
             "uri": "/v1/campaigns/CMPBDA",
-            "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
             "payments_uri": "/v1/campaigns/CMPBDA/payments",
-            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
+            "settlements_uri": "/v1/campaigns/CMPBDA/settlements",
+            "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
+            "first_contributor": null,
+            "tilter": null,
             "stats": {
                 "tilt_percent": 0,
                 "raised_amount": 0,
                 "unique_contributors": 0,
-                "number_of_payments": 0
-            }
+                "number_of_contributions": 0
+            },
+            "creation_date": "2011-07-02T14:20:48Z",
+            "modification_date": "2011-09-02T14:20:48Z",                
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" }  
         }
     }
 
@@ -1350,32 +1289,29 @@ a campaign image.
     {
         "campaign": {
             "id": "CMPBDA",
-            "user_id": "USREC5",
             "title": "Campaign Title",
-            "description": "some description",
-            "privacy": 1,
-            "type": 1,
             "tilt_amount": 100,
             "min_payment_amount": 0,
             "fixed_payment_amount": 0,
             "expiration_date": "2000-01-02T01:02:03Z",
-            "creation_date": "2000-01-02T01:02:03Z",
-            "modification_date": "2000-01-02T01:02:03Z",
             "is_tilted": 0,
             "is_paid": 0,
             "is_expired": 0,
-            "tax_id": null,
-            "tax_name": null,
             "uri": "/v1/campaigns/CMPBDA",
-            "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
             "payments_uri": "/v1/campaigns/CMPBDA/payments",
-            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
+            "settlements_uri": "/v1/campaigns/CMPBDA/settlements",
+            "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
+            "first_contributor": null,
+            "tilter": null,
             "stats": {
                 "tilt_percent": 0,
                 "raised_amount": 0,
                 "unique_contributors": 0,
-                "number_of_payments": 0
-            }
+                "number_of_contributions": 0
+            },
+            "creation_date": "2011-07-02T14:20:48Z",
+            "modification_date": "2011-09-02T14:20:48Z",                
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" } 
         }
     }
 
@@ -1397,40 +1333,38 @@ a campaign image.
 
     {
         "pagination": {
-            "total_pages": 34337,
             "page": 1,
-            "total_entries": 1716893,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
             "per_page": 50
         },
         "campaigns": [
             {
                 "id": "CMPBDA",
-                "user_id": "USREC5",
                 "title": "Campaign Title",
-                "description": "some description",
-                "privacy": 1,
-                "type": 1,
                 "tilt_amount": 100,
                 "min_payment_amount": 0,
                 "fixed_payment_amount": 0,
                 "expiration_date": "2000-01-02T01:02:03Z",
-                "creation_date": "2000-01-02T01:02:03Z",
-                "modification_date": "2000-01-02T01:02:03Z",
                 "is_tilted": 0,
                 "is_paid": 0,
-                "is_expired" : 0,
-                "tax_id": null,
-                "tax_name": null,
+                "is_expired": 0,
                 "uri": "/v1/campaigns/CMPBDA",
-                "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
                 "payments_uri": "/v1/campaigns/CMPBDA/payments",
-                "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
+                "settlements_uri": "/v1/campaigns/CMPBDA/settlements",
+                "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
+                "first_contributor": null,
+                "tilter": null,
                 "stats": {
                     "tilt_percent": 0,
                     "raised_amount": 0,
                     "unique_contributors": 0,
-                    "number_of_payments": 0
-                }
+                    "number_of_contributions": 0
+                },
+                "creation_date": "2011-07-02T14:20:48Z",
+                "modification_date": "2011-09-02T14:20:48Z",                
+                "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" } 
             },
             .
             .
@@ -1466,32 +1400,29 @@ to update a single attribute without having to send the full [campaign object](/
     {
         "campaign": {
             "id": "CMPBDA",
-            "user_id": "USREC5",
             "title": "A Different Campaign Title",
-            "description": "some description",
-            "privacy": 1,
-            "type": 1,
             "tilt_amount": 100,
             "min_payment_amount": 0,
             "fixed_payment_amount": 0,
             "expiration_date": "2000-01-02T01:02:03Z",
-            "creation_date": "2000-01-02T01:02:03Z",
-            "modification_date": "2000-01-02T01:02:03Z",
             "is_tilted": 0,
             "is_paid": 0,
             "is_expired": 0,
-            "tax_id": null,
-            "tax_name": null,
             "uri": "/v1/campaigns/CMPBDA",
-            "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
             "payments_uri": "/v1/campaigns/CMPBDA/payments",
-            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" },
+            "settlements_uri": "/v1/campaigns/CMPBDA/settlements",
+            "admin": { "id": "USREC5", "uri": "/v1/users/USREC5", ... },
+            "first_contributor": null,
+            "tilter": null,
             "stats": {
                 "tilt_percent": 0,
                 "raised_amount": 0,
                 "unique_contributors": 0,
-                "number_of_payments": 0
-            }
+                "number_of_contributions": 0
+            },
+            "creation_date": "2011-07-02T14:20:48Z",
+            "modification_date": "2011-09-02T14:20:48Z",                
+            "metadata" : { "img" : "http://www.example.com/path-to-campaign-image" }
         }
     }
 
@@ -1542,18 +1473,18 @@ the admin will only receive `$19.60` from the `$20.00` payment.
 
     {
        "payment" : {
-          "status" : "charged",
-          "modification_date" : "2012-10-20T15:45:47Z",
-          "metadata" : {},
           "id" : "CON233",
-          "uri" : "/v1/campaigns/CMP96B/payments/CON233",
+          "status" : "charged",
           "amount" : 2000,
           "user_fee_amount" : 40,
           "admin_fee_amount" : 40,
-          "creation_date" : "2012-10-20T15:45:13Z",
+          "uri" : "/v1/campaigns/CMP96B/payments/CON233",
           "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
           "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
           "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
+          "creation_date" : "2012-10-20T15:45:13Z",
+          "modification_date" : "2012-10-20T15:45:47Z",            
+          "metadata" : {}
        }
     }
 
@@ -1575,18 +1506,18 @@ the admin will only receive `$19.60` from the `$20.00` payment.
 
     {
        "payment" : {
-          "status" : "charged",
-          "modification_date" : "2012-10-20T15:45:47Z",
-          "metadata" : {},
           "id" : "CON233",
-          "uri" : "/v1/campaigns/CMP96B/payments/CON233",
+          "status" : "charged",
           "amount" : 2000,
           "user_fee_amount" : 40,
           "admin_fee_amount" : 40,
-          "creation_date" : "2012-10-20T15:45:13Z",
+          "uri" : "/v1/campaigns/CMP96B/payments/CON233",
           "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
           "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
           "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
+          "creation_date" : "2012-10-20T15:45:13Z",
+          "modification_date" : "2012-10-20T15:45:47Z",            
+          "metadata" : {}
        }
     }
 
@@ -1618,18 +1549,18 @@ Note that you may only do this for payments with a status of "rejected".
 
     {
        "payment" : {
+          "id" : "CON234",
           "status" : "charged",
-          "modification_date" : "2012-10-20T15:45:47Z",
-          "metadata" : {},
-          "id" : "CON233",
-          "uri" : "/v1/campaigns/CMP96B/payments/CON233",
           "amount" : 2000,
           "user_fee_amount" : 40,
           "admin_fee_amount" : 40,
-          "creation_date" : "2012-10-20T15:45:13Z",
+          "uri" : "/v1/campaigns/CMP96B/payments/CON234",
           "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
-          "card" : { "id" : "CCPC42", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
+          "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC42", ... },
           "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
+          "creation_date" : "2012-10-20T15:45:13Z",
+          "modification_date" : "2012-10-20T15:45:47Z",            
+          "metadata" : {}
        }
     }
 
@@ -1650,28 +1581,32 @@ Note that you may only do this for payments with a status of "rejected".
 #### Response Body
 
     {
+       "pagination" : {
+            "page": 1,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
+            "per_page": 50
+       },       
        "payments" : [
           {
-             "status" : "charged",
-             "modification_date" : "2012-10-20T15:45:47Z",
-             "metadata" : {},
-             "id" : "CON233",
-             "uri" : "/v1/campaigns/CMP96B/payments/CON233",
-             "amount" : 2000,
-             "user_fee_amount" : 40,
-             "admin_fee_amount" : 40,
-             "creation_date" : "2012-10-20T15:45:13Z",
-             "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
-             "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
-             "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
-          }
-       ],
-       "pagination" : {
-          "total_pages" : 1,
-          "page" : 1,
-          "total_entries" : 1,
-          "per_page" : 50
-       }
+              "id" : "CON233",
+              "status" : "charged",
+              "amount" : 2000,
+              "user_fee_amount" : 40,
+              "admin_fee_amount" : 40,
+              "uri" : "/v1/campaigns/CMP96B/payments/CON233",
+              "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
+              "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
+              "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
+              "creation_date" : "2012-10-20T15:45:13Z",
+              "modification_date" : "2012-10-20T15:45:47Z",            
+              "metadata" : {}
+          },
+          .
+          .
+          .
+       ]
     }
 
 #### Response Codes
@@ -1691,28 +1626,32 @@ Note that you may only do this for payments with a status of "rejected".
 #### Response Body
 
     {
-       "payments" : [
+        "pagination" : {
+            "page": 1,
+            "entries_on_this_page": 3,
+            "total_pages": 1,
+            "total_entries": 3,
+            "per_page": 50
+        } 
+        "payments" : [         
           {
-             "status" : "rejected",
-             "modification_date" : "2012-10-20T15:45:47Z",
-             "metadata" : {},
-             "id" : "CON233",
-             "uri" : "/v1/campaigns/CMP96B/payments/CON233",
-             "amount" : 2000,
-             "user_fee_amount" : 40,
-             "admin_fee_amount" : 40,
-             "creation_date" : "2012-10-20T15:45:13Z",
-             "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
-             "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
-             "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
-          }
-       ],
-       "pagination" : {
-          "total_pages" : 1,
-          "page" : 1,
-          "total_entries" : 1,
-          "per_page" : 50
-       }
+              "id" : "CON234",
+              "status" : rejected",
+              "amount" : 2000,
+              "user_fee_amount" : 40,
+              "admin_fee_amount" : 40,
+              "uri" : "/v1/campaigns/CMP96B/payments/CON234",
+              "campaign" : { "id": "CMP96B", "uri" : "/v1/campaigns/CMP96B", ... },
+              "card" : { "id" : "CCPC41", "uri" : "/v1/users/USR521/cards/CCPC41", ... },
+              "user": { "id" : "USR521", "uri" : "/v1/users/USR521", ... },
+              "creation_date" : "2012-10-20T15:45:13Z",
+              "modification_date" : "2012-10-20T15:45:47Z",            
+              "metadata" : {}
+          },
+          .
+          .
+          .
+       ]
     }
 
 #### Response Codes
@@ -1772,7 +1711,7 @@ campaign settlement are:
     $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/settlements/SMTD88
 
-#### Response
+#### Response Body
 
     {
         "settlement" : {
@@ -1780,11 +1719,12 @@ campaign settlement are:
             "status" : "pending",
             "admin_amount" : 1960,
             "escrow_amount" : 40,
-            "modification_date" : "2012-10-29T15:34:48.177091000Z",
-            "creation_date" : "2012-10-29T15:34:48.177091000Z",
             "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
             "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
-            "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... }
+            "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... },
+            "uri": "/v1/campaigns/CMPCCC/settlements/SMTD88",
+            "creation_date" : "2012-10-29T15:34:48.177091000Z",
+            "modification_date" : "2012-10-29T15:34:48.177091000Z"
         }
     }
 
@@ -1797,29 +1737,33 @@ campaign settlement are:
     $ curl -X GET -H Content-Type:application/json -u key:secret \
     https://api-sandbox.crowdtilt.com/v1/campaigns/CMPCCC/settlements
 
-#### Response
+#### Response Body
 
-    "settlements" : [
-        {
-            "id" : "SMTD88",
-            "status" : "pending",
-            "admin_amount" : 1960,
-            "escrow_amount" : 40,
-            "modification_date" : "2012-10-29T15:34:48.177091000Z",
-            "creation_date" : "2012-10-29T15:34:48.177091000Z",
-            "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
-            "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
-            "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... }
-        },
-        .
-        .
-        .
-    ],
-    "pagination" : {
-        "total_pages" : 1,
-        "page" : 1,
-        "total_entries" : 1,
-        "per_page" : 50
+    {
+        "pagination" : {
+                "page": 1,
+                "entries_on_this_page": 3,
+                "total_pages": 1,
+                "total_entries": 3,
+                "per_page": 50
+            }
+        "settlements" : [
+            {
+                "id" : "SMTD88",
+                "status" : "pending",
+                "admin_amount" : 1960,
+                "escrow_amount" : 40,
+                "bank" : { "id" : "BAPCA3", "uri" : "/v1/users/USRC77/banks/BAPCA3", ... },
+                "campaign" : { "id" : "CMPCCC", "uri" : "/v1/campaigns/CMPCCC", ... },
+                "user" : { "id" : "USRC7B", "uri" : "/v1/users/USRC7B", ... },
+                "uri": "/v1/campaigns/CMPCCC/settlements/SMTD88",
+                "creation_date" : "2012-10-29T15:34:48.177091000Z",
+                "modification_date" : "2012-10-29T15:34:48.177091000Z"
+            },
+            .
+            .
+            .
+        ]
     }
 
 ### Update Campaign Settlement Bank
@@ -1881,9 +1825,9 @@ The purpose of the `score` field is to provide support for voting on comments.
             "body" : "Comment Body",
             "score" : 1,
             "parent_id" : null,
-            "metadata" : { },
             "creation_date" : "2012-10-01T00:00:00Z",
-            "modification_date" : "2012-10-01T00:00:00Z"
+            "modification_date" : "2012-10-01T00:00:00Z",
+            "metadata" : { }
         }
     }
 
@@ -1912,11 +1856,13 @@ The purpose of the `score` field is to provide support for voting on comments.
                 "body" : "Comment Body",
                 "score" : 1,
                 "parent_id" : null,
-                "metadata" : { },
                 "creation_date" : "2012-10-01T00:00:00Z",
-                "modification_date" : "2012-10-01T00:00:00Z"
+                "modification_date" : "2012-10-01T00:00:00Z",
+                "metadata" : { }
             },
-            ...
+            .
+            .
+            .
         ]
     }
 
@@ -1944,9 +1890,9 @@ The purpose of the `score` field is to provide support for voting on comments.
             "body" : "Comment Body",
             "score" : 1,
             "parent_id" : null,
-            "metadata" : { },
             "creation_date" : "2012-10-01T00:00:00Z",
-            "modification_date" : "2012-10-01T00:00:00Z"
+            "modification_date" : "2012-10-01T00:00:00Z",
+            "metadata" : { }
         }
     }
 
@@ -1980,15 +1926,16 @@ Currently you can only alter the score and the metadata of a comment.
         "comment" : {
             "id" : "CMT123",
             "user_id' : "USR123",
+            "campaign_id" : "CMPCCC",
             "title" : "Optional Title",
             "body" : "Comment Body",
-            "score" : 2,
+            "score" : 1,
             "parent_id" : null,
+            "creation_date" : "2012-10-01T00:00:00Z",
+            "modification_date" : "2012-10-01T00:00:00Z",
             "metadata" : {
                 "key" : "value",
-            },
-            "creation_date" : "2012-10-01T00:00:00Z",
-            "modification_date" : "2012-10-01T00:00:00Z"
+            }
         }
     }
 
@@ -2029,18 +1976,19 @@ create two users, an admin, and a contributor.
     # Response
     {
         "user" : {
-           "last_login_date" : null,
-           "paid_campaigns_uri" : "/v1/users/USRC55/paid_campaigns",
-           "is_verified" : 0,
-           "uri" : "/v1/users/USRC55",
-           "firstname" : null,
-           "lastname" : null,
-           "email" : "user@gmail.com",
-           "creation_date" : "2012-10-31T00:41:55Z",
-           "metadata" : {},
-           "id" : "USRC55",
-           "campaigns_uri" : "/v1/users/USRC55/campaigns",
-           "payments_uri" : "/v1/users/USRC55/payments"
+            "banks_uri": "/v1/users/USR38/banks", 
+            "campaigns_uri": "/v1/users/USR38/campaigns", 
+            "cards_uri": "/v1/users/USR38/cards", 
+            "creation_date": "2013-03-19T03:29:34.605286000Z", 
+            "email": "user@gmail.com", 
+            "firstname": null, 
+            "id": "USR38", 
+            "is_verified": 0, 
+            "lastname": null, 
+            "metadata": {}, 
+            "modification_date": "2013-03-19T03:29:34.605286000Z",  
+            "payments_uri": "/v1/users/USR38/payments", 
+            "uri": "/v1/users/USR38"
         }
      }
 
@@ -2056,18 +2004,19 @@ create two users, an admin, and a contributor.
      # Response
      {
          "user" : {
-            "last_login_date" : null,
-            "paid_campaigns_uri" : "/v1/users/USRE32/paid_campaigns",
-            "is_verified" : 0,
-            "uri" : "/v1/users/USRE32",
-            "firstname" : null,
-            "lastname" : null,
-            "email" : "payer@gmail.com",
-            "creation_date" : "2012-10-31T00:41:55Z",
-            "metadata" : {},
-            "id" : "USRC55",
-            "campaigns_uri" : "/v1/users/USRE32/campaigns",
-            "payments_uri" : "/v1/users/USRE32/payments"
+            "banks_uri": "/v1/users/USR55/banks", 
+            "campaigns_uri": "/v1/users/USR55/campaigns", 
+            "cards_uri": "/v1/users/USR55/cards", 
+            "creation_date": "2013-03-19T03:29:34.605286000Z", 
+            "email": "payer@gmail.com", 
+            "firstname": null, 
+            "id": "USR55", 
+            "is_verified": 0, 
+            "lastname": null, 
+            "metadata": {}, 
+            "modification_date": "2013-03-19T03:29:34.605286000Z",  
+            "payments_uri": "/v1/users/USR55/payments", 
+            "uri": "/v1/users/USR55"
          }
       }
 
@@ -2081,59 +2030,54 @@ second user to make a payment on the campaign.
         https://api-sandbox.crowdtilt.com/v1/campaigns \
         -d'{
             "campaign" : {
-                "user_id" : "USRC55",
+                "user_id" : "USR38",
                 "expiration_date" : "2012-10-31T12:00:00Z",
                 "title" : "Halloween Awesome Fest",
-                "description" : "This will be the best thing ever!",
-                "tilt_amount" : 300000,
+                "tilt_amount" : 300000
             }
         }'
 
     # Response
     {
         "campaign" : {
-            "tilter" : null,
-            "min_payment_amount" : 0,
-            "first_contributor" : null,
-            "metadata" : {},
-            "id" : "CMP542",
-            "is_paid" : 0,
-            "settlements_uri" : "/v1/campaigns/CMP542/settlements",
-            "privacy" : 1,
-            "admin" : {
-                "firstname" : null,
-                "paid_campaigns_uri" : "/v1/users/USRC55/paid_campaigns",
-                "email" : "user@gmail.com",
-                "metadata" : {},
-                "id" : "USRC55",
-                "uri" : "/v1/users/USRC55",
-                "creation_date" : "2012-10-31T00:41:55Z",
-                "campaigns_uri" : "/v1/users/USRC55/campaigns",
-                "last_login_date" : "2012-10-30T17:41:55.834029000Z",
-                "lastname" : null,
-                "payments_uri" : "/v1/users/USRC55/payments",
-                "is_verified" : 0
-            },
-            "is_expired" : 0,
-            "fixed_payment_amount" : 0,
-            "tilt_amount" : 300000,
-            "description" : "This will be the best thing ever!",
-            "uri" : "/v1/campaigns/CMP542",
-            "creation_date" : "2012-11-01T13:40:10.153237000Z",
-            "user_id" : "USRC55",
-            "title" : "Halloween Awesome Fest",
-            "payments_uri" : "/v1/campaigns/CMP542/payments",
-            "modification_date" : "2012-11-01T13:40:10.153237000Z",
-            "stats" : {
-                "tilt_percent" : 0,
-                "raised_amount" : 0,
-                "unique_contributors" : 0,
-                "number_of_contributions" : 0
-            },
-            "expiration_date" : "2012-10-31T12:00:00Z",
-            "is_tilted" : 0,
-            "tax_id" : null,
-            "tax_name" : null
+            "admin": {
+                "banks_uri": "/v1/users/USR38/banks", 
+                "campaigns_uri": "/v1/users/USR38/campaigns", 
+                "cards_uri": "/v1/users/USR38/cards", 
+                "creation_date": "2013-03-19T03:29:34.605286000Z", 
+                "email": "user@gmail.com", 
+                "firstname": null, 
+                "id": "USR38", 
+                "is_verified": 0, 
+                "lastname": null, 
+                "metadata": {}, 
+                "modification_date": "2013-03-19T03:29:34.605286000Z",  
+                "payments_uri": "/v1/users/USR38/payments", 
+                "uri": "/v1/users/USR38"
+            }, 
+            "creation_date": "2013-03-19T03:34:13.518139000Z", 
+            "expiration_date": "2012-10-31T12:00:00Z", 
+            "first_contributor": null, 
+            "fixed_payment_amount": 0, 
+            "id": "CMPDE8", 
+            "is_expired": 0, 
+            "is_paid": 0, 
+            "is_tilted": 0, 
+            "metadata": {}, 
+            "min_payment_amount": 0, 
+            "modification_date": "2013-03-19T03:34:13.518139000Z", 
+            "payments_uri": "/v1/campaigns/CMPDE8/payments", 
+            "settlements_uri": "/v1/campaigns/CMPDE8/settlements", 
+            "stats": {
+                "number_of_contributions": 0, 
+                "raised_amount": 0, 
+                "tilt_percent": 0, 
+                "unique_contributors": 0
+            }, 
+            "tilt_amount": 300000, 
+            "tilter": null, 
+            "title": "Halloween Awesome Fest", 
+            "uri": "/v1/campaigns/CMPDE8"
         }
     }
 
@@ -2142,12 +2086,12 @@ second user to make a payment on the campaign.
 Now, we'll create a credit card for the paying user.
 
     $ curl -X POST -u key:secret  -H Content-Type:application/json \
-        https://api-sandbox.crowdtilt.com/v1/users/USRE32/cards \
+        https://api-sandbox.crowdtilt.com/v1/users/USR55/cards \
         -d'{
             "card" : {
                 "number" : "4111111111111111",
                 "expiration_month" : "07",
-                "expiration_year" : "2032",
+                "expiration_year" : "2023",
                 "security_code" : "123"
             }
         }'
@@ -2155,14 +2099,30 @@ Now, we'll create a credit card for the paying user.
     # Response
     {
         "card" : {
-           "last_four" : "1111",
-           "expiration_year" : "2032",
-           "expiration_month" : "07",
-           "uri" : "/v1/users/USRE32/cards/CCPA69",
-           "card_type" : "VISA card",
-           "creation_date" : "2012-11-01T20:49:37Z",
-           "metadata" : {},
-           "id" : "CCPA69"
+            "card_type": "VISA card", 
+            "creation_date": "2013-03-19T03:36:21.682748000Z", 
+            "expiration_month": "07", 
+            "expiration_year": 2023, 
+            "id": "CCP2A", 
+            "last_four": "1111", 
+            "metadata": {}, 
+            "modification_date": "2013-03-19T03:36:21.682748000Z", 
+            "uri": "/v1/users/USR55/cards/CCP2AE", 
+            "user": {
+                "banks_uri": "/v1/users/USR55/banks", 
+                "campaigns_uri": "/v1/users/USR55/campaigns", 
+                "cards_uri": "/v1/users/USR55/cards", 
+                "creation_date": "2013-03-19T03:29:34.605286000Z", 
+                "email": "payer@gmail.com", 
+                "firstname": null, 
+                "id": "USR55", 
+                "is_verified": 0, 
+                "lastname": null, 
+                "metadata": {}, 
+                "modification_date": "2013-03-19T03:29:34.605286000Z",  
+                "payments_uri": "/v1/users/USR55/payments", 
+                "uri": "/v1/users/USR55"
+            }
         }
      }
 
@@ -2171,108 +2131,110 @@ Now, we'll create a credit card for the paying user.
 Now we'll create a payment by the paying user to the campaign we created.
 
     $ curl -X POST -u key:secret  -H Content-Type:application/json \
-        https://api-sandbox.crowdtilt.com/v1/campaings/CMP542/payments \
+        https://api-sandbox.crowdtilt.com/v1/campaigns/CMP542/payments \
         -d'{
             "payment" : {
-                "user_id" : "USRE32",
-                "amount" : "2000",
+                "user_id" : "USR55",
+                "amount" : "3000",
                 "user_fee_amount" : "100",
-                "admin_fee_amount" : "200",
-                "card_id" : "CCPA69"
+                "admin_fee_amount" : "40",
+                "card_id" : "CCP2AE"
             }
         }'
 
     # Response
     {
         "payment" : {
-           "status" : "authorized",
-           "user_fee_amount" : "100",
-           "campaign" : {
-              "tilter" : null,
-              "min_payment_amount" : 0,
-              "first_contributor" : {
-                 "firstname" : "",
-                 "paid_campaigns_uri" : "/v1/users/USRE32/paid_campaigns",
-                 "email" : "payer@gmail.com",
-                 "metadata" : {},
-                 "id" : "USRE32",
-                 "uri" : "/v1/users/USRE32",
-                 "creation_date" : "2012-11-01T20:56:19Z",
-                 "campaigns_uri" : "/v1/users/USRE32/campaigns",
-                 "last_login_date" : "2012-11-01T13:56:19.964087000Z",
-                 "lastname" : "",
-                 "payments_uri" : "/v1/users/USRE32/payments",
-                 "is_verified" : 0
-              },
-              "metadata" : {},
-              "id" : "CMP542",
-              "is_paid" : 0,
-              "settlements_uri" : "/v1/campaigns/CMP542",
-              "privacy" : 1,
-              "admin" : {
-                 "firstname" : "",
-                 "paid_campaigns_uri" : "/v1/users/USRC55/paid_campaigns",
-                 "email" : "user@gmail.com",
-                 "metadata" : {},
-                 "id" : "USRC55",
-                 "uri" : "/v1/users/USRC55",
-                 "creation_date" : "2012-10-31T00:41:55Z",
-                 "campaigns_uri" : "/v1/users/USRC55/campaigns",
-                 "last_login_date" : "2012-10-30T17:41:55.834029000Z",
-                 "lastname" : "",
-                 "payments_uri" : "/v1/users/USRC55/payments",
-                 "is_verified" : 0
-              },
-              "is_expired" : 1,
-              "fixed_payment_amount" : 0,
-              "tilt_amount" : 300000,
-              "description" : "This will be the best thing ever!",
-              "uri" : "/v1/campaigns/CMP542",
-              "creation_date" : "2012-11-01T13:40:10.153237000Z",
-              "title" : "Halloween Awesome Fest",
-              "payments_uri" : "/v1/campaigns/CMP5422B558246411E281ED84A52A776874/payments",
-              "modification_date" : "2012-11-01T13:40:10.153237000Z",
-              "stats" : {
-                 "tilt_percent" : 2,
-                 "raised_amount" : 6000,
-                 "unique_contributors" : 1,
-                 "number_of_contributions" : 3
-              },
-              "expiration_date" : "2012-10-31T12:00:00Z",
-              "is_tilted" : 0,
-              "tax_id" : null,
-              "tax_name" : null
-           },
-           "user" : {
-              "firstname" : "",
-              "paid_campaigns_uri" : "/v1/users/USR962FB8E0246611E2AEDE84A52A776874/paid_campaigns",
-              "email" : "payer@gmail.com",
-              "metadata" : {},
-              "id" : "USRE32",
-              "uri" : "/v1/users/USRE32",
-              "creation_date" : "2012-11-01T20:56:19Z",
-              "campaigns_uri" : "/v1/users/USRE32/campaigns",
-              "last_login_date" : "2012-11-01T13:56:19.964087000Z",
-              "lastname" : "",
-              "payments_uri" : "/v1/users/USRE32/payments",
-              "is_verified" : 0
-           },
-           "metadata" : {},
-           "id" : "CON036",
-           "uri" : "/v1/campaigns/CMP542/payments/CON036",
-           "card" : {
-              "last_four" : "1111",
-              "metadata" : {},
-              "id" : "CCPA69",
-              "expiration_year" : 2032,
-              "expiration_month" : "07",
-              "uri" : "/v1/users/USRE32/cards/CCPA69",
-              "card_type" : "VISA card",
-              "creation_date" : "2012-11-01T20:57:20Z"
-           },
-           "amount" : "2000",
-           "admin_fee_amount" : "200",
-        }
+            "admin_fee_amount": 40, 
+            "amount": 3000, 
+            "campaign" : {
+                "admin": {
+                    "banks_uri": "/v1/users/USR38/banks", 
+                    "campaigns_uri": "/v1/users/USR38/campaigns", 
+                    "cards_uri": "/v1/users/USR38/cards", 
+                    "creation_date": "2013-03-19T03:29:34.605286000Z", 
+                    "email": "user@gmail.com", 
+                    "firstname": null, 
+                    "id": "USR38", 
+                    "is_verified": 0, 
+                    "lastname": null, 
+                    "metadata": {}, 
+                    "modification_date": "2013-03-19T03:29:34.605286000Z",  
+                    "payments_uri": "/v1/users/USR38/payments", 
+                    "uri": "/v1/users/USR38"
+                }, 
+                "creation_date": "2013-03-19T03:34:13.518139000Z", 
+                "expiration_date": "2012-10-31T12:00:00Z", 
+                "first_contributor": null, 
+                "fixed_payment_amount": 0, 
+                "id": "CMPDE8", 
+                "is_expired": 0, 
+                "is_paid": 0, 
+                "is_tilted": 0, 
+                "metadata": {}, 
+                "min_payment_amount": 0, 
+                "modification_date": "2013-03-19T03:34:13.518139000Z", 
+                "payments_uri": "/v1/campaigns/CMPDE8/payments", 
+                "settlements_uri": "/v1/campaigns/CMPDE8/settlements", 
+                "stats": {
+                    "number_of_contributions": 1, 
+                    "raised_amount": 3000, 
+                    "tilt_percent": 1, 
+                    "unique_contributors": 1
+                }, 
+                "tilt_amount": 300000, 
+                "tilter": null, 
+                "title": "Halloween Awesome Fest", 
+                "uri": "/v1/campaigns/CMPDE8"
+            },  
+            "card": {
+                "card_type": "VISA card", 
+                "creation_date": "2013-03-19T03:36:21.682748000Z", 
+                "expiration_month": "07", 
+                "expiration_year": 2023, 
+                "id": "CCP2A", 
+                "last_four": "1111", 
+                "metadata": {}, 
+                "modification_date": "2013-03-19T03:36:21.682748000Z", 
+                "uri": "/v1/users/USR55/cards/CCP2AE", 
+                "user": {
+                    "banks_uri": "/v1/users/USR55/banks", 
+                    "campaigns_uri": "/v1/users/USR55/campaigns", 
+                    "cards_uri": "/v1/users/USR55/cards", 
+                    "creation_date": "2013-03-19T03:29:34.605286000Z", 
+                    "email": "payer@gmail.com", 
+                    "firstname": null, 
+                    "id": "USR55", 
+                    "is_verified": 0, 
+                    "lastname": null, 
+                    "metadata": {}, 
+                    "modification_date": "2013-03-19T03:29:34.605286000Z",  
+                    "payments_uri": "/v1/users/USR55/payments", 
+                    "uri": "/v1/users/USR55"
+                }
+            },  
+            "creation_date": "2013-03-19T03:38:38.736326000Z", 
+            "id": "CON7C9", 
+            "metadata": {}, 
+            "modification_date": "2013-03-19T03:38:41Z", 
+            "status": "authorized", 
+            "uri": "/v1/campaigns/CMPDE8/payments/CON7C9", 
+            "user": {
+                "banks_uri": "/v1/users/USR55/banks", 
+                "campaigns_uri": "/v1/users/USR55/campaigns", 
+                "cards_uri": "/v1/users/USR55/cards", 
+                "creation_date": "2013-03-19T03:29:34.605286000Z", 
+                "email": "payer@gmail.com", 
+                "firstname": null, 
+                "id": "USR55", 
+                "is_verified": 0, 
+                "lastname": null, 
+                "metadata": {}, 
+                "modification_date": "2013-03-19T03:29:34.605286000Z",  
+                "payments_uri": "/v1/users/USR55/payments", 
+                "uri": "/v1/users/USR55"
+            }, 
+            "user_fee_amount": 100
      }
 
 This payment will charge `$21.00` to the user's credit card (`$20.00` from the
@@ -2352,14 +2314,31 @@ If successful, the response object passed to the responseHandler function takes 
 
     {
         "card": {
-            "last_four":"1111",
-            "expiration_year":2013,
-            "expiration_month":"03",
-            "uri":"/v1/users/USR1E0A9BCE5F6111E28F485D097AC0CAB6/cards/CCP59BCB06C601F11E28057FB337AC0CAB6",
-            "card_type":"VISA card",
-            "creation_date":"2013-01-16T20:57:34Z",
-            "metadata":{},
-            "id":"CCP59BCB06C601F11E28057FB337AC0CAB6"
+            "card_type": "VISA card", 
+            "creation_date": "2013-03-19T03:48:59.685761000Z", 
+            "expiration_month": "03", 
+            "expiration_year": 2023, 
+            "id": "CCPEEBABE72904711E2AB7EDDC43A854B4C", 
+            "last_four": "1111", 
+            "metadata": {}, 
+            "modification_date": "2013-03-19T03:48:59.685761000Z", 
+            "uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A/cards/CCPEEBABE72904711E2AB7EDDC43A854B4C", 
+            "user": {
+                "banks_uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A/banks", 
+                "campaigns_uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A/campaigns", 
+                "cards_uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A/cards", 
+                "creation_date": "2013-02-18T00:09:39Z", 
+                "email": "mark@ting.com", 
+                "firstname": "John", 
+                "id": "USR7C7CE3AC795F11E2901DABD956AC4F1A", 
+                "is_verified": 0, 
+                "lastname": "Smith", 
+                "metadata": {}, 
+                "modification_date": "2013-03-19T00:03:56Z", 
+                "paid_campaigns_uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A/paid_campaigns", 
+                "payments_uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A/payments", 
+                "uri": "/v1/users/USR7C7CE3AC795F11E2901DABD956AC4F1A"
+            }
         },
         "request_id":"REQ5735A0D8601F11E2998D00347AC0CAB6",
         "status":201
@@ -2408,7 +2387,7 @@ you need to make an additional API call to set this new bank account as the 'def
 Example:
 
     "bankData": {
-        "name" : "Bank Name",
+        "name" : "John Smith",
         "account_number" : "1234567890",
         "bank_code" : "321174851"
     }
@@ -2427,13 +2406,31 @@ If successful, the response object passed to the responseHandler function takes 
 
     {
         "bank": {
-            "account_number_last_four":"0000",
-            "metadata":{},"id":"BAP5973D36A601F11E29CF3FB337AC0CAB6",
-            "is_valid":1,
-            "name":"Wells Fargo",
-            "user_uri":"/v1/users/USR1E0A9BCE5F6111E28F485D097AC0CAB6",
-            "bank_code_last_four":"4851",
-            "uri":"/v1/users/USR1E0A9BCE5F6111E28F485D097AC0CAB6/banks/BAP5973D36A601F11E29CF3FB337AC0CAB6"
+            "account_number_last_four": "7890", 
+            "bank_code_last_four": "1234", 
+            "creation_date": "2013-03-19T03:46:45.557777000Z", 
+            "id": "BAP9EC85D70904711E2AB7EDDC43A854B4C", 
+            "is_default": 0, 
+            "metadata": {}, 
+            "modification_date": "2013-03-19T03:46:45.557777000Z", 
+            "name": "John Smith", 
+            "uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083/banks/BAP9EC85D70904711E2AB7EDDC43A854B4C", 
+            "user": {
+                "banks_uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083/banks", 
+                "campaigns_uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083/campaigns", 
+                "cards_uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083/cards", 
+                "creation_date": "2013-02-19T18:11:37Z", 
+                "email": "happyness@sauce.com", 
+                "firstname": "marc", 
+                "id": "USRCD2689FA7ABF11E2863ADF5C03071083", 
+                "is_verified": 1, 
+                "lastname": null, 
+                "metadata": {}, 
+                "modification_date": "2013-03-04T06:14:25.991725000Z", 
+                "paid_campaigns_uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083/paid_campaigns", 
+                "payments_uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083/payments", 
+                "uri": "/v1/users/USRCD2689FA7ABF11E2863ADF5C03071083"
+            }
         },
         "request_id":"REQ5743854A601F11E2B79201347AC0CAB6",
         "status":201
@@ -2692,19 +2689,10 @@ This section outlines the full definition of our resources.
             <td>It is ISO8601 DateTime format</td>
         </tr>
         <tr>
-            <td>last_login_date</td>
+            <td>modification_date</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
-            <td>
-                It is ISO8601 DateTime format, updated when a user
-                is authenticated.
-            </td>
-        </tr>
-        <tr>
-            <td>metadata</td>
-            <td>JSON object</td>
-            <td>No</td>
-            <td>Key-Value pair for any extra data the API consumer wants to store. For example, a reference to the URL of a user's profile image.</td>
+            <td>It is ISO8601 DateTime format</td>
         </tr>
         <tr>
             <td>uri</td>
@@ -2713,16 +2701,22 @@ This section outlines the full definition of our resources.
             <td>The uri for this user resource</td>
         </tr>
         <tr>
+            <td>cards_uri</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>The uri for listing user's cards</td>
+        </tr>
+        <tr>
+            <td>banks_uri</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>The uri for listing user's banks</td>
+        </tr>
+        <tr>
             <td>campaigns_uri</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
             <td>The uri for listing user's campaigns</td>
-        </tr>
-        <tr>
-            <td>paid_campaigns_uri</td>
-            <td>string</td>
-            <td>Auto generated and read-only</td>
-            <td>The uri for listing the campaigns the user paid for</td>
         </tr>
         <tr>
             <td>payments_uri</td>
@@ -2730,6 +2724,13 @@ This section outlines the full definition of our resources.
             <td>Auto generated and read-only</td>
             <td>The uri for the user's payments</td>
         </tr>
+        <tr>
+            <td>metadata</td>
+            <td>JSON object</td>
+            <td>No</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store. For example, a reference to the URL of a user's profile image.</td>
+        </tr>
+        
     </tbody>
 </table>
 
@@ -2782,23 +2783,30 @@ This section outlines the full definition of our resources.
             <td>Read-Only</td>
             <td> The user object that owns this card</td>
         </tr>
-        <tr>
-            <td>metadata</td>
-            <td>JSON object</td>
-            <td>No</td>
-            <td>Key-Value pair for any extra data the API consumer wants to store.</td>
-        </tr>
+
         <tr>
             <td>uri</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
-            <td>The uri for this user resource</td>
+            <td>The uri for this card resource</td>
         </tr>
         <tr>
             <td>creation_date</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
             <td>It is ISO8601 DateTime format</td>
+        </tr>
+        <tr>
+            <td>modification_date</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>It is ISO8601 DateTime format</td>
+        </tr>
+        <tr>
+            <td>metadata</td>
+            <td>JSON object</td>
+            <td>No</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store.</td>
         </tr>
     </tbody>
 </table>
@@ -2823,28 +2831,10 @@ This section outlines the full definition of our resources.
             <td>A unique identifier for the bank</td>
         </tr>
         <tr>
-            <td>is_default</td>
-            <td>Integer (1 or 0)</td>
-            <td>Read-only</td>
-            <td> Tells you if this bank is currently the default for the user </td>
-        </tr>
-        <tr>
-            <td>account_number</td>
-            <td>string</td>
-            <td>Yes, not returned</td>
-            <td> Bank Account Number </td>
-        </tr>
-        <tr>
             <td>account_number_last_four</td>
             <td>string</td>
             <td>Read-Only</td>
             <td>Last four digits of account nummber</td>
-        </tr>
-        <tr>
-            <td>bank_code</td>
-            <td>string</td>
-            <td>Yes, not returned</td>
-            <td> Bank Routing Code </td>
         </tr>
         <tr>
             <td>bank_code_last_four</td>
@@ -2859,22 +2849,40 @@ This section outlines the full definition of our resources.
             <td> The name of this bank account </td>
         </tr>
         <tr>
+            <td>is_default</td>
+            <td>Integer (1 or 0)</td>
+            <td>Read-only</td>
+            <td> Tells you if this bank is currently the default for the user </td>
+        </tr>
+        <tr>
             <td>user</td>
             <td>JSON object</td>
             <td>Read-Only</td>
             <td> The user object that owns this bank</td>
         </tr>
         <tr>
+            <td>uri</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>The uri for this bank resource</td>
+        </tr>
+        <tr>
+            <td>creation_date</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>It is ISO8601 DateTime format</td>
+        </tr>
+        <tr>
+            <td>modification_date</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>It is ISO8601 DateTime format</td>
+        </tr>
+        <tr>
             <td>metadata</td>
             <td>JSON object</td>
             <td>No</td>
             <td>Key-Value pair for any extra data the API consumer wants to store.</td>
-        </tr>
-        <tr>
-            <td>uri</td>
-            <td>string</td>
-            <td>Auto generated and read-only</td>
-            <td>The uri for this user resource</td>
         </tr>
     </tbody>
 </table>
@@ -2899,65 +2907,10 @@ This section outlines the full definition of our resources.
             <td>A unique identifier for the campaign</td>
         </tr>
         <tr>
-            <td>user_id</td>
-            <td>string</td>
-            <td>Yes</td>
-            <td>The id of the campaign admin</td>
-        </tr>
-        <tr>
             <td>title</td>
             <td>string</td>
             <td>Yes</td>
             <td>The title of the campaign</td>
-        </tr>
-        <tr>
-            <td>description</td>
-            <td>string</td>
-            <td>Yes</td>
-            <td>The description of the campaign</td>
-        </tr>
-        <tr>
-            <td>is_expired</td>
-            <td>number</td>
-            <td>No</td>
-            <td>Whether or not the campaign is expired
-                <table>
-                    <tr>
-                        <td>Value</td>
-                        <td>Description</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>Not Expired</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Expired</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>privacy</td>
-            <td>number</td>
-            <td>No</td>
-            <td>The privacy settings for the campaign. It defaults to 1.
-            Available values
-                <table>
-                    <tr>
-                        <td>Value</td>
-                        <td>Description</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>public</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>private</td>
-                    </tr>
-                </table>
-            </td>
         </tr>
         <tr>
             <td>tilt_amount</td>
@@ -2990,18 +2943,6 @@ This section outlines the full definition of our resources.
             <td>The expiration date of the campaign</td>
         </tr>
         <tr>
-            <td>creation_date</td>
-            <td>String. ISO8601 DateTime format</td>
-            <td>Auto generated and read-only</td>
-            <td>The creation date of the campaign</td>
-        </tr>
-        <tr>
-            <td>modification_date</td>
-            <td>String. ISO8601 DateTime format</td>
-            <td>Auto generated and read-only</td>
-            <td>The modification date of the campaign</td>
-        </tr>
-        <tr>
             <td>is_tilted</td>
             <td>number</td>
             <td>Read-only</td>
@@ -3015,58 +2956,26 @@ This section outlines the full definition of our resources.
             admin</td>
         </tr>
         <tr>
-            <td>type</td>
+            <td>is_expired</td>
             <td>number</td>
             <td>No</td>
-            <td>The type of the campaign. Available values
+            <td>Whether or not the campaign is expired
                 <table>
                     <tr>
                         <td>Value</td>
                         <td>Description</td>
                     </tr>
                     <tr>
-                        <td>1</td>
-                        <td>Friendly</td>
+                        <td>0</td>
+                        <td>Not Expired</td>
                     </tr>
                     <tr>
-                        <td>2</td>
-                        <td>non-profit</td>
+                        <td>1</td>
+                        <td>Expired</td>
                     </tr>
                 </table>
             </td>
-        </tr>
-        <tr>
-            <td>tax_id</td>
-            <td>string</td>
-            <td>No</td>
-            <td>The EIN for a business or non-profit organization. This
-            attribute is required only if the campaign type is a non-profit.
-            </td>
-        </tr>
-        <tr>
-            <td>tax_name</td>
-            <td>string</td>
-            <td>No</td>
-            <td>The name of the business or non-profit</td>
-        </tr>
-        <tr>
-            <td>admin</td>
-            <td>JSON User object</td>
-            <td>Auto generated and read-only</td>
-            <td>This campaign's admin</td>
-        </tr>
-        <tr>
-            <td>tilter</td>
-            <td>JSON User object</td>
-            <td>Auto generated and read-only</td>
-            <td>This campaign's tilter (if tilted)</td>
-        </tr>
-        <tr>
-            <td>first_contributor</td>
-            <td>JSON User object</td>
-            <td>Auto generated and read-only</td>
-            <td>This campaign's first contributor</td>
-        </tr>
+        </tr>        
         <tr>
             <td>uri</td>
             <td>string</td>
@@ -3086,16 +2995,46 @@ This section outlines the full definition of our resources.
             <td>The uri with the settlements for this campaign</td>
         </tr>
         <tr>
-            <td>metadata</td>
-            <td>JSON object</td>
-            <td>No</td>
-            <td>Key-Value pair for any extra data the API consumer wants to store. For example, a reference to the URL of a campaign image.</td>
+            <td>admin</td>
+            <td>JSON User object</td>
+            <td>Auto generated and read-only</td>
+            <td>This campaign's admin</td>
+        </tr>
+        <tr>
+            <td>first_contributor</td>
+            <td>JSON User object</td>
+            <td>Auto generated and read-only</td>
+            <td>This campaign's first contributor</td>
+        </tr>
+        <tr>
+            <td>tilter</td>
+            <td>JSON User object</td>
+            <td>Auto generated and read-only</td>
+            <td>This campaign's tilter (if tilted)</td>
         </tr>
         <tr>
             <td>stats</td>
             <td>JSON object</td>
             <td>No</td>
             <td>Statistics information about the campaign.</td>
+        </tr>
+        <tr>
+            <td>creation_date</td>
+            <td>String. ISO8601 DateTime format</td>
+            <td>Auto generated and read-only</td>
+            <td>The creation date of the campaign</td>
+        </tr>
+        <tr>
+            <td>modification_date</td>
+            <td>String. ISO8601 DateTime format</td>
+            <td>Auto generated and read-only</td>
+            <td>The modification date of the campaign</td>
+        </tr>
+        <tr>
+            <td>metadata</td>
+            <td>JSON object</td>
+            <td>No</td>
+            <td>Key-Value pair for any extra data the API consumer wants to store. For example, a reference to the URL of a campaign image.</td>
         </tr>
     </tbody>
 </table>
@@ -3118,6 +3057,27 @@ This section outlines the full definition of our resources.
             <td>string</td>
             <td>Auto generated and read-only</td>
             <td>A unique identifier for the payment</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>Reflects the status of the payment. Available values:
+                <table>
+                    <tr>
+                        <td>authorized</td>
+                    </tr>
+                    <tr>
+                        <td>charged</td>
+                    </tr>
+                    <tr>
+                        <td>refunded</td>
+                    </tr>
+                    <tr>
+                        <td>rejected</td>
+                    </tr>
+                </table>
+            </td>
         </tr>
         <tr>
             <td>amount</td>
@@ -3152,25 +3112,28 @@ This section outlines the full definition of our resources.
             </td>
         </tr>
         <tr>
-            <td>status</td>
+            <td>uri</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
-            <td>Reflects the status of the payment. Available values:
-                <table>
-                    <tr>
-                        <td>authorized</td>
-                    </tr>
-                    <tr>
-                        <td>charged</td>
-                    </tr>
-                    <tr>
-                        <td>refunded</td>
-                    </tr>
-                    <tr>
-                        <td>rejected</td>
-                    </tr>
-                </table>
-            </td>
+            <td>The uri for this payment resource</td>
+        </tr>
+        <tr>
+            <td>campaign</td>
+            <td>JSON Campaign object</td>
+            <td>Auto generated and read-only</td>
+            <td>The campaign this payment is for</td>
+        </tr>
+        <tr>
+            <td>card</td>
+            <td>JSON Card object</td>
+            <td>Auto generated and read-only</td>
+            <td>The card used for this payment</td>
+        </tr>        
+        <tr>
+            <td>user</td>
+            <td>JSON User object</td>
+            <td>Auto generated and read-only</td>
+            <td>The contributor of this payment</td>
         </tr>
         <tr>
             <td>creation_date</td>
@@ -3183,30 +3146,6 @@ This section outlines the full definition of our resources.
             <td>String. ISO8601 DateTime format</td>
             <td>Auto generated and read-only</td>
             <td>The modification date of the payment</td>
-        </tr>
-        <tr>
-            <td>uri</td>
-            <td>string</td>
-            <td>Auto generated and read-only</td>
-            <td>The uri for this campaign resource</td>
-        </tr>
-        <tr>
-            <td>user</td>
-            <td>JSON User object</td>
-            <td>Auto generated and read-only</td>
-            <td>The contributor of this payment</td>
-        </tr>
-        <tr>
-            <td>card</td>
-            <td>JSON Card object</td>
-            <td>Auto generated and read-only</td>
-            <td>The card used for this payment</td>
-        </tr>
-        <tr>
-            <td>campaign</td>
-            <td>JSON Campaign object</td>
-            <td>Auto generated and read-only</td>
-            <td>The campaign this payment is for</td>
         </tr>
         <tr>
             <td>metadata</td>
@@ -3234,25 +3173,7 @@ This section outlines the full definition of our resources.
             <td>id</td>
             <td>string</td>
             <td>Auto generated and read-only</td>
-            <td>A unique identifier for the payment</td>
-        </tr>
-        <tr>
-            <td>admin_amount</td>
-            <td>number</td>
-            <td>Auto generated and read-only</td>
-            <td>
-                The amount of this payment that is going to the admin bank
-                account (the bank account shown in the `bank` sub-object).
-            </td>
-        </tr>
-        <tr>
-            <td>escrow_amount</td>
-            <td>number</td>
-            <td>Auto generated and read-only</td>
-            <td>
-                The amount of this payment that is going into the API Users
-                escrow account.
-            </td>
+            <td>A unique identifier for the settlement</td>
         </tr>
         <tr>
             <td>status</td>
@@ -3297,6 +3218,48 @@ This section outlines the full definition of our resources.
             </td>
         </tr>
         <tr>
+            <td>admin_amount</td>
+            <td>number</td>
+            <td>Auto generated and read-only</td>
+            <td>
+                The amount of this settlement that is going to the admin bank
+                account (the bank account shown in the `bank` sub-resource).
+            </td>
+        </tr>
+        <tr>
+            <td>escrow_amount</td>
+            <td>number</td>
+            <td>Auto generated and read-only</td>
+            <td>
+                The amount of this settlement that is going into the API User's
+                escrow account (it represents fees charged to the admin and payers)
+            </td>
+        </tr>
+        <tr>
+            <td>bank</td>
+            <td>JSON Bank object</td>
+            <td>Auto generated and read-only</td>
+            <td>The bank account that received this settlement</td>
+        </tr>        
+        <tr>
+            <td>campaign</td>
+            <td>JSON Campaign object</td>
+            <td>Auto generated and read-only</td>
+            <td>The campaign this settlement is for</td>
+        </tr>
+        <tr>
+            <td>user</td>
+            <td>JSON User object</td>
+            <td>Auto generated and read-only</td>
+            <td>The user who received this settlement (admin of the campaign)</td>
+        </tr>
+        <tr>
+            <td>uri</td>
+            <td>string</td>
+            <td>Auto generated and read-only</td>
+            <td>The uri for this settlement</td>
+        </tr>
+        <tr>
             <td>creation_date</td>
             <td>String. ISO8601 DateTime format</td>
             <td>Auto generated and read-only</td>
@@ -3307,30 +3270,6 @@ This section outlines the full definition of our resources.
             <td>String. ISO8601 DateTime format</td>
             <td>Auto generated and read-only</td>
             <td>The modification date of the settlement</td>
-        </tr>
-        <tr>
-            <td>uri</td>
-            <td>string</td>
-            <td>Auto generated and read-only</td>
-            <td>The uri for this settlement</td>
-        </tr>
-        <tr>
-            <td>user</td>
-            <td>JSON User object</td>
-            <td>Auto generated and read-only</td>
-            <td>The user who received this settlement</td>
-        </tr>
-        <tr>
-            <td>bank</td>
-            <td>JSON Bank object</td>
-            <td>Auto generated and read-only</td>
-            <td>The bank account that received this settlement</td>
-        </tr>
-        <tr>
-            <td>campaign</td>
-            <td>JSON Campaign object</td>
-            <td>Auto generated and read-only</td>
-            <td>The campaign this payment is for</td>
         </tr>
         <tr>
             <td>metadata</td>
@@ -3351,8 +3290,9 @@ of **50** entries per page. For example:
 
     {
         "pagination": {
-            "total_pages": 2,
             "page": 1,
+            "entries_on_this_page": 3,
+            "total_pages": 2,
             "total_entries": 100,
             "per_page": 50
         },
@@ -3362,14 +3302,15 @@ of **50** entries per page. For example:
                 "email": "foo.bar@gmail.com",
                 "firstname": "Foo",
                 "lastname": "Bar",
-                "is_verified": 1,
+                "is_verified": 0,
                 "creation_date": "2011-07-02T14:20:48Z",
-                "last_login_date": "2012-09-22T01:55:49Z",
+                "modification_date": "2011-09-02T14:20:48Z",
                 "uri": "/v1/users/USREC5",
+                "cards_uri": "/v1/users/USREC5/cards",
+                "banks_uri": "/v1/users/USREC5/banks",
                 "campaigns_uri": "/v1/users/USREC5/campaigns",
-                "paid_campaigns_uri": "/v1/users/USREC5/paid_campaigns",
                 "payments_uri": "/v1/users/USREC5/payments",
-                "metadata": {}
+                "metadata" : { "img" : "http://www.example.com/path-to-profile-image" }
             },
             .
             .
