@@ -13,24 +13,22 @@ The Crowdtilt API opens up the opportunity for developers to:
 
 What we think is cool about the Crowdtilt API:
 
-* Developers can use the Crowdtilt API with their own payment processor
-    as it works with [Stripe](https://stripe.com/),
-    [Balanced](https://www.balancedpayments.com/),
-    [BrainTree](https://www.braintreepayments.com).
-* Though we have the above preferred partners for the Crowdtilt API already
-    built out and ready to use, our API is actually built around our universal
+* Our API is built around our universal
     payments interface, which allows developers to integrate any payment
     processor from around the world right into our system.  For more information
     about how to get access to this interface to build support for your favorite
     processor, drop us a note at [support.api@crowdtilt.com](mailto:support.api@crowdtilt.com).
-* The API also works with credit cards and ACH debit payments or a combination
-    of these.
+* Out of the box the Crowdtilt API works with [Balanced Payments](https://www.balancedpayments.com/).
+*  Support for [Stripe](https://stripe.com/) and 
+[BrainTree](https://www.braintreepayments.com) coming soon.
+* Support for multiple currencies and international languages coming soon.
+* The API works with credit cards.
+* Support for ACH debit payments coming soon.
 * The API provides collaboration tools such as commenting/updates, nested
     comments, messaging, notifications, and tracking of those that have paid and
     those that haven't.
-* The API supports both multiple currencies and international languages.
 * We also provide a tool to tokenize the sensitive information you collect (credit card 
-  and bank account numbers), so you don't have to worry about PCI compliance
+  and bank account numbers), so you don't have to worry about PCI compliance.
 
 # Menu
 * [Introduction](#introduction)
@@ -65,10 +63,8 @@ What we think is cool about the Crowdtilt API:
 ## Introduction
 
 It is important to understand that the Crowdtilt API is a layer of abstraction
-on top of payment processors. Currently, we support Balanced, which is recommended
-for multi-project services such as Kickstarter. We also support Stripe, which is
-suitable for single-project services such as Lockitron. Finally, we support
-Braintree, which is highly suitable for international projects.
+on top of payment processors. Currently, we support [Balanced Payments](https://www.balancedpayments.com/), which is well-suited 
+for single-project sites like Lockitron, or multi-project services such as Kickstarter. Support fo [Stripe](https://stripe.com/) and [BrainTree](https://www.braintreepayments.com) is coming soon.
 
 When interacting with a payment gateway, the focus is highly transactional and
 payment-based.  We consider a payment to be simply a part of a whole.  Our API
@@ -83,7 +79,7 @@ payments``, e.g., donations.
 ``Payments`` are simply a way for users to achieve the campaign goal. We believe
 that a good crowdfunding service should support any type of payment. Therefore,
 we are working on supporting as many payment methods as possible. Currently, we
-support credit cards and ACH debits.
+support credit cards transactions. ACH debits support coming soon.
 
 When the campaign is created, it has to have at least one ``user`` to act as the
 owner or the campaign admin. Once the campaign goal is achieved, the money is
