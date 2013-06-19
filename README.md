@@ -58,6 +58,7 @@ What we think is cool about the Crowdtilt API:
     * [Payment Definition](#payment-definition)
     * [Settlement Definition](#settlement-definition)
 * [Pagination](#pagination)
+* [Terms of Use](#terms)
 
 
 ## Introduction
@@ -3279,3 +3280,7 @@ The default limits can be changed with ``per_page`` and ``page`` request
 parameters. For example:
 
     GET /users?page=2&per_page=10
+
+# Terms of Use
+
+By accessing or using the Crowdtilt API you agree to be bound by the [Crowdtilt API Terms of Use](https://www.crowdtilt.com/api-terms).
